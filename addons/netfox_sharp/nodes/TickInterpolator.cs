@@ -19,6 +19,7 @@ public partial class TickInterpolator : Node
     #endregion
 
     #region Public Variables
+    /// <summary>The node from which the <see cref="Properties"/> paths from.</summary>
     public Node Root
     {
         get { return root; }
@@ -28,6 +29,7 @@ public partial class TickInterpolator : Node
             _tickInterpolator?.Set(PropertyNameGd.Root, value);
         }
     }
+    /// <summary>Whether the tick interpolator is enabled.</summary>
     public bool Enabled
     {
         get { return enabled; }
@@ -37,6 +39,7 @@ public partial class TickInterpolator : Node
             _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
         }
     }
+    /// <summary>Properties to interpolate from the <see cref="root"/> node.</summary>
     public Array<string> Properties
     {
         get { return properties; }
@@ -66,6 +69,7 @@ public partial class TickInterpolator : Node
     }
     #endregion
 
+    /// <summary>Internal reference of the TickInterpolator GDScript node.</summary>
     GodotObject _tickInterpolator;
 
     public override void _Ready()
@@ -82,9 +86,19 @@ public partial class TickInterpolator : Node
     }
 
     #region Methods
+    /// <summary>Call this after any change to configuration.</summary>
     public void ProcessSettings() { _tickInterpolator.Call(MethodNameGd.ProcessSettings); }
+    /// <summary><para>Check if interpolation can be done.</para>
+    /// <para>Even if it's enabled, no interpolation will be done if there are no
+    /// properties to interpolate.</para></summary>
+    /// <returns>Whether the node is able to and has reason to interpolate.</returns>
     public bool CanInterpolate() { return (bool)_tickInterpolator.Call(MethodNameGd.CanInterpolate); }
+    /// <summary><para>Record current state for interpolation.</para>
+    /// <para>Note that this will rotate the states, so the previous target becomes the new
+    /// starting point for the interpolation. This is automatically called if 
+    /// <see cref="EnableRecording"/> is true.</para></summary>
     public void PushState() { _tickInterpolator.Call(MethodNameGd.PushState); }
+    /// <summary>Record current state and transition without interpolation.</summary>
     public void Teleport() { _tickInterpolator.Call(MethodNameGd.Teleport); }
     #endregion
 

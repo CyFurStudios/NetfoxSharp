@@ -2,9 +2,32 @@
 
 namespace Netfox;
 
+/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
+/// Netfox</see> addon.</para>
+/// 
+/// <para>Provides convenience signals for multiplayer games.</para>
+/// 
+/// <para>While the client start/stop and peer join/leave events are trivial, the
+/// server side has no similar events. This means that if you'd like to add some
+/// funcionality that should happen on server start, you either have to couple
+/// the code (IE call it wherever you start the server) or introduce a custom
+/// event to decouple your code from your network init code.</para>
+/// 
+/// <para>By providing these convenience events, you can forego all that and instead
+/// just listen to a single signal that should work no matter what.</para>
+/// 
+/// <para><b>NOTE:</b> This class also manages <see cref="NetworkTime"/> start/stop,
+/// so as long as network events are enabled, you don't need to manually call start/stop.</para>
+/// 
+/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-events/">
+/// NetworkEvents</see> Netfox guide for more information.</para></summary>
 public partial class NetworkEvents : Node
 {
     #region Public Variables
+    /// <summary><para>Whether the events are enabled</para>
+    /// <para>Events are only emitted when it's enabled. Disabling this can free up some
+    /// performance, as when enabled, the multiplayer API and the host are
+    /// continuously checked for changes.</para></summary>
     public bool Enabled
     {
         get { return (bool)_networkTimeGd.Get(PropertyNameGd.Enabled); }
@@ -12,9 +35,12 @@ public partial class NetworkEvents : Node
     }
     #endregion
 
+    /// <summary>Internal reference of the NetworkEvents GDScript autoload.</summary>
     GodotObject _networkTimeGd;
 
-    public NetworkEvents(GodotObject networkTimeGd)
+    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <param name="networkTimeGd">The NetworkEvents GDScript autoload.</param>
+    internal NetworkEvents(GodotObject networkTimeGd)
     {
         _networkTimeGd = networkTimeGd;
 
@@ -28,23 +54,39 @@ public partial class NetworkEvents : Node
     }
 
     #region Signals
+    /// <summary>Event emitted when the <see cref="MultiplayerApi"/> is changed.</summary>
+    /// <param name="oldApi">The old <see cref="MultiplayerApi"/></param>
+    /// <param name="newApi">The new <see cref="MultiplayerApi"/></param>
     [Signal]
     public delegate void OnMultiplayerChangeEventHandler(MultiplayerApi oldApi, MultiplayerApi newApi);
+    /// <summary>Event emitted when the server starts.</summary>
     [Signal]
     public delegate void OnServerStartEventHandler();
+    /// <summary>Event emitted when the server stops for any reason.</summary>
     [Signal]
     public delegate void OnServerStopEventHandler();
+    /// <summary>Event emitted when the client starts.</summary>
+    /// <param name="clientId">The client ID.</param>
     [Signal]
     public delegate void OnClientStartEventHandler(long clientId);
+    /// <summary><para>Event emitted when the client stops.</para>
+    /// <para>This can happen due to either the client itself or the server disconnecting
+    /// for whatever reason.</para></summary>
     [Signal]
     public delegate void OnClientStopEventHandler();
+    /// <summary>Event emitted when a new peer joins the game.</summary>
+    /// <param name="peerId">The ID of the peer that joined.</param>
     [Signal]
     public delegate void OnPeerJoinEventHandler(long peerId);
+    /// <summary>Event emitted when a peer leaves the game.</summary>
+    /// <param name="peerId">The ID of the peer that left.</param>
     [Signal]
     public delegate void OnPeerLeaveEventHandler(long peerId);
     #endregion
 
     #region Methods
+    /// <summary>Check if we're running as server.</summary>
+    /// <returns>Whether this instance is a server</returns>
     public bool IsServer() { return (bool)_networkTimeGd.Call(MethodNameGd.IsServer); }
     #endregion
 

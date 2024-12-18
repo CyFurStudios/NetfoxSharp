@@ -6,12 +6,15 @@ namespace Netfox;
 public partial class StateSynchronizer : Node
 {
     #region Exports
+    /// <summary>The node from which the <see cref="properties"/> paths from.</summary>
     [Export]
     Node root;
+    /// <summary>Properties to synchronize from the <see cref="root"/> node.</summary>
     [Export]
     Array<string> properties;
     #endregion
 
+    /// <summary>Internal reference of the StateSynchronizer GDScript node.</summary>
     GodotObject _stateSynchronizer;
 
     public override void _Ready()
@@ -25,6 +28,7 @@ public partial class StateSynchronizer : Node
     }
 
     #region Methods
+    /// <summary>Call this after any change to configuration.</summary>
     public void ProcessSettings() { _stateSynchronizer.Call(MethodNameGd.ProcessSettings); }
     #endregion
 
