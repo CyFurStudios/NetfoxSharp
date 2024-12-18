@@ -42,43 +42,12 @@ public partial class NetworkTime : Node
     /// between local and server time is above a certain threshold, this value will
     /// be adjusted.</para></summary>
     public long Tick { get { return (long)_networkTimeGd.Get(PropertyNameGd.Tick); } }
-    /// <summary><para>Threshold before recalibrating <see cref="Tick"/> and <see cref="Time"/>.</para>
-    /// <para>Time is continuously synced to the server. In case the time difference is 
-    /// excessive between local and the server, both <see cref="Tick"/> and
-    /// <see cref="Time"/> will be reset to the estimated server values.</para>
-    /// <para>This property determines the difference threshold in seconds for
-    /// recalibration.</para></summary>
-    public double RecalibrateThreshold { get { return (long)_networkTimeGd.Get(PropertyNameGd.RecalibrateThreshold); } }
-    /// <summary><para>Current network time in ticks on the server.</para>
-    /// <para>This value is an estimate of the server's tick, and is regularly updated. This means that 
-    /// this value can and probably will change depending on network conditions.</para></summary>
-    public long RemoteTick { get { return (long)_networkTimeGd.Get(PropertyNameGd.RemoteTick); } }
-    /// <summary><para>Current network time in seconds on the server.</para>
-    /// <para>This value is an estimate of the server's time, and is regularly updated. This means that 
-    /// this value can and probably will change depending on network conditions.</para></summary>
-    public double RemoteTime { get { return (long)_networkTimeGd.Get(PropertyNameGd.RemoteTime); } }
     /// <summary><para>Estimated roundtrip time (ping) to server.</para>
     /// <para>This value is updated regularly, during server time sync. Latency can be 
     /// estimated as half of the roundtrip time. Returns the same as 
     /// <see cref="NetworkTimeSynchronizer.Rtt"/>.</para>
     /// <para><b>NOTE:</b> Will always be 0 on the server.</para></summary>
     public double RemoteRtt { get { return (long)_networkTimeGd.Get(PropertyNameGd.RemoteRtt); } }
-    /// <summary><para>Current network time in ticks.</para>
-    /// <para>On clients, this value is synced to the server <b>once</b> when joining
-    /// the game. After that, it will increase monotonically, incrementing every 
-    /// single tick.</para>
-    /// <para>When hosting, this value is simply the number of ticks since game start.</para>
-    /// <para>This property can be used for things that require a timer that is guaranteed
-    /// to be linear, IE no jumps in time.</para></summary>
-    public long LocalTick { get { return (long)_networkTimeGd.Get(PropertyNameGd.LocalTick); } }
-    /// <summary><para>Current network time in seconds.</para>
-    /// <para>On clients, this value is synced to the server <b>once</b> when joining
-    /// the game. After that, it will increase monotonically, incrementing every 
-    /// single tick.</para>
-    /// <para>When hosting, this value is simply the seconds elapsed since game start.</para>
-    /// <para>This property can be used for things that require a timer that is guaranteed
-    /// to be linear, IE no jumps in time.</para></summary>
-    public double LocalTime { get { return (long)_networkTimeGd.Get(PropertyNameGd.LocalTime); } }
     /// <summary><para>Amount of time a single tick takes, in seconds.</para>
     /// <para>This is the inverse of tickrate.</para></summary>
     public double TickTime { get { return (long)_networkTimeGd.Get(PropertyNameGd.TickTime); } }
