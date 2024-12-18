@@ -36,7 +36,6 @@ public class NetfoxLogger
         get { return (string)_logger.Get(PropertyNameGd.Name); ; }
         set { _logger.Set(PropertyNameGd.Name, value); }
     }
-    string name;
 
     /// <summary>Internal constructor for static instantiation.</summary>
     static NetfoxLogger()
