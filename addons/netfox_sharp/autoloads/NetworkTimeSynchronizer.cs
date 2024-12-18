@@ -17,43 +17,43 @@ public partial class NetworkTimeSynchronizer : Node
 {
     #region Public Variables
     /// <summary>Time between sync samples, in seconds.</summary>
-    public double SyncInterval { get { return (double)_networkTimeGd.Get(PropertyNameGd.SyncInterval); } }
+    public double SyncInterval { get { return (double)_networkTimeSynchronizerGd.Get(PropertyNameGd.SyncInterval); } }
     /// <summary>Number of measurements (samples) to use for time synchronization.</summary>
-    public long SyncSamples { get { return (long)_networkTimeGd.Get(PropertyNameGd.SyncSamples); } }
+    public long SyncSamples { get { return (long)_networkTimeSynchronizerGd.Get(PropertyNameGd.SyncSamples); } }
     /// <summary><para>Number of iterations to nudge towards the host's remote clock.</para>
     /// <para>Lower values result in more aggressive changes in clock and may be more 
     /// sensitive to jitter. Larger values may end up approaching the remote clock
     /// too slowly.</para></summary>
-    public long AdjustSteps { get { return (long)_networkTimeGd.Get(PropertyNameGd.AdjustSteps); } }
+    public long AdjustSteps { get { return (long)_networkTimeSynchronizerGd.Get(PropertyNameGd.AdjustSteps); } }
     /// <summary><para>Largest tolerated offset from the host's remote clock before panicking.</para>
     /// <para>Once this threshold is reached, the clock will be reset to the remote clock's 
     /// value, and the nudge process will start from scratch.</para></summary>
-    public double PanicThreshold { get { return (double)_networkTimeGd.Get(PropertyNameGd.PanicThreshold); } }
+    public double PanicThreshold { get { return (double)_networkTimeSynchronizerGd.Get(PropertyNameGd.PanicThreshold); } }
     /// <summary><para>Measured roundtrip time measured to the host.</para>
     /// <para>This value is calculated from multiple samples. The actual roundtrip times 
     /// can be anywhere in the <see cref="Rtt"/> +/- <see cref="RttJitter"/> range.</para></summary>
-    public double Rtt { get { return (double)_networkTimeGd.Get(PropertyNameGd.Rtt); } }
+    public double Rtt { get { return (double)_networkTimeSynchronizerGd.Get(PropertyNameGd.Rtt); } }
     /// <summary><para>Measured jitter in the roundtrip time to the host remote.</para>
     /// <para>This value is calculated from multiple samples. The actual roundtrip times 
     /// can be anywhere in the <see cref="Rtt"/> +/- <see cref="RttJitter"/> range.</para></summary>
-    public double RttJitter { get { return (double)_networkTimeGd.Get(PropertyNameGd.RttJitter); } }
+    public double RttJitter { get { return (double)_networkTimeSynchronizerGd.Get(PropertyNameGd.RttJitter); } }
     /// <summary><para>Estimated offset from the host's remote clock.</para>
     /// <para>Positive values mean that the host's remote clock is ahead of ours, while
     /// negative values mean that our clock is behind the host's remote.</para></summary>
-    public double RemoteOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteOffset); } }
+    public double RemoteOffset { get { return (double)_networkTimeSynchronizerGd.Get(PropertyNameGd.RemoteOffset); } }
     #endregion
 
     /// <summary>Internal reference of the NetworkTimeSynchronizer GDScript autoload.</summary>
-    GodotObject _networkTimeGd;
+    GodotObject _networkTimeSynchronizerGd;
 
     /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkTimeSynchronizer GDScript autoload.</param>
     internal NetworkTimeSynchronizer(GodotObject networkTimeGd)
     {
-        _networkTimeGd = networkTimeGd;
+        _networkTimeSynchronizerGd = networkTimeGd;
 
-        _networkTimeGd.Connect(SignalNameGd.OnInitialSync, Callable.From(() => EmitSignal(SignalName.OnInitialSync)));
-        _networkTimeGd.Connect(SignalNameGd.OnPanic, Callable.From((double offset) => EmitSignal(SignalName.OnPanic, offset)));
+        _networkTimeSynchronizerGd.Connect(SignalNameGd.OnInitialSync, Callable.From(() => EmitSignal(SignalName.OnInitialSync)));
+        _networkTimeSynchronizerGd.Connect(SignalNameGd.OnPanic, Callable.From((double offset) => EmitSignal(SignalName.OnPanic, offset)));
     }
 
     #region Signals
@@ -75,12 +75,12 @@ public partial class NetworkTimeSynchronizer : Node
 
     #region Methods
     /// <summary><para>Starts the NetworkTimeSynchronizer.</para></summary>
-    public void Start() { _networkTimeGd.Call(MethodNameGd.Start); }
+    public void Start() { _networkTimeSynchronizerGd.Call(MethodNameGd.Start); }
     /// <summary><para>Stops the NetworkTimeSynchronizer.</para></summary>
-    public void Stop() { _networkTimeGd.Call(MethodNameGd.Stop); }
+    public void Stop() { _networkTimeSynchronizerGd.Call(MethodNameGd.Stop); }
     /// <summary>Get the current time from the reference clock.</summary>
     /// <returns>The time, in seconds.</returns>
-    public double GetTime() { return (double)_networkTimeGd.Call(MethodNameGd.GetTime); }
+    public double GetTime() { return (double)_networkTimeSynchronizerGd.Call(MethodNameGd.GetTime); }
     #endregion
 
     #region StringName Constants

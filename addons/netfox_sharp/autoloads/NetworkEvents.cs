@@ -30,27 +30,27 @@ public partial class NetworkEvents : Node
     /// continuously checked for changes.</para></summary>
     public bool Enabled
     {
-        get { return (bool)_networkTimeGd.Get(PropertyNameGd.Enabled); }
-        set { _networkTimeGd.Set(PropertyNameGd.Enabled, value); }
+        get { return (bool)_networkEventsGd.Get(PropertyNameGd.Enabled); }
+        set { _networkEventsGd.Set(PropertyNameGd.Enabled, value); }
     }
     #endregion
 
     /// <summary>Internal reference of the NetworkEvents GDScript autoload.</summary>
-    GodotObject _networkTimeGd;
+    GodotObject _networkEventsGd;
 
     /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkEvents GDScript autoload.</param>
     internal NetworkEvents(GodotObject networkTimeGd)
     {
-        _networkTimeGd = networkTimeGd;
+        _networkEventsGd = networkTimeGd;
 
-        _networkTimeGd.Connect(SignalNameGd.OnMultiplayerChange, Callable.From((MultiplayerApi oldApi, MultiplayerApi newApi) => EmitSignal(SignalName.OnMultiplayerChange, oldApi, newApi)));
-        _networkTimeGd.Connect(SignalNameGd.OnServerStart, Callable.From(() => EmitSignal(SignalName.OnServerStart)));
-        _networkTimeGd.Connect(SignalNameGd.OnServerStop, Callable.From(() => EmitSignal(SignalName.OnServerStop)));
-        _networkTimeGd.Connect(SignalNameGd.OnClientStart, Callable.From((long clientId) => EmitSignal(SignalName.OnClientStart, clientId)));
-        _networkTimeGd.Connect(SignalNameGd.OnClientStop, Callable.From(() => EmitSignal(SignalName.OnClientStop)));
-        _networkTimeGd.Connect(SignalNameGd.OnPeerJoin, Callable.From((long clientId) => EmitSignal(SignalName.OnPeerJoin, clientId)));
-        _networkTimeGd.Connect(SignalNameGd.OnPeerLeave, Callable.From((long clientId) => EmitSignal(SignalName.OnPeerLeave, clientId)));
+        _networkEventsGd.Connect(SignalNameGd.OnMultiplayerChange, Callable.From((MultiplayerApi oldApi, MultiplayerApi newApi) => EmitSignal(SignalName.OnMultiplayerChange, oldApi, newApi)));
+        _networkEventsGd.Connect(SignalNameGd.OnServerStart, Callable.From(() => EmitSignal(SignalName.OnServerStart)));
+        _networkEventsGd.Connect(SignalNameGd.OnServerStop, Callable.From(() => EmitSignal(SignalName.OnServerStop)));
+        _networkEventsGd.Connect(SignalNameGd.OnClientStart, Callable.From((long clientId) => EmitSignal(SignalName.OnClientStart, clientId)));
+        _networkEventsGd.Connect(SignalNameGd.OnClientStop, Callable.From(() => EmitSignal(SignalName.OnClientStop)));
+        _networkEventsGd.Connect(SignalNameGd.OnPeerJoin, Callable.From((long clientId) => EmitSignal(SignalName.OnPeerJoin, clientId)));
+        _networkEventsGd.Connect(SignalNameGd.OnPeerLeave, Callable.From((long clientId) => EmitSignal(SignalName.OnPeerLeave, clientId)));
     }
 
     #region Signals
@@ -87,7 +87,7 @@ public partial class NetworkEvents : Node
     #region Methods
     /// <summary>Check if we're running as server.</summary>
     /// <returns>Whether this instance is a server</returns>
-    public bool IsServer() { return (bool)_networkTimeGd.Call(MethodNameGd.IsServer); }
+    public bool IsServer() { return (bool)_networkEventsGd.Call(MethodNameGd.IsServer); }
     #endregion
 
     #region StringName Constants
