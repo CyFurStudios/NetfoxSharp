@@ -3,13 +3,13 @@ using Godot.Collections;
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Provides custom monitors for measuring networking performance.</para>
 /// 
 /// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-performance/">
-/// NetworkPerformance</see> Netfox guide for more information.</para></summary>
+/// NetworkPerformance</see> netfox guide for more information.</para></summary>
 public partial class NetworkPerformance : Node
 {
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
@@ -27,6 +27,10 @@ public partial class NetworkPerformance : Node
     /// <summary>Checks to see if network performance monitoring is enabled.</summary>
     /// <returns>Whether network performance monitoring is enabled.</returns>
     public bool IsEnabled() { return (bool)_networkPerformanceGd.Call(MethodNameGd.IsEnabled); }
+
+    // NOTE: I think getters can be left unexposed, as they're only intended
+    // for registering them with Godot.
+    //
     /// <summary>Get time spent in the last network tick loop, including time spent
     /// in the rollback tick loop.</summary>
     /// <returns>The total time, in msec.</returns>
@@ -54,6 +58,9 @@ public partial class NetworkPerformance : Node
     /// <summary>Get the ratio of <see cref="GetSentStatePropsCount"/> to <see cref="GetFullStatePropsCount"/>.</summary>
     /// <returns>Ratio of sent properties count to full properties count.</returns>
     public double GetSentStatePropsRatio() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsRatio); }
+
+    // NOTE: Push* methods can be definitely left unexposed, they shouldn't be
+    // called from outside of netfox
     public void PushFullState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullState, dictionary); }
     public void PushFullStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullStateBroadcast, dictionary); }
     public void PushSentState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentState, dictionary); }

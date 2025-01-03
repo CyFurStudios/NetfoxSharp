@@ -38,3 +38,5 @@ version, please [open an issue].
 
 Netfox Sharp is under the [MIT license](LICENSE). Note that the Netfox dependency
 may contain differing licenses, so be sure to check those out.
+
+[open an issue]: https://github.com/CyFurStudios/NetfoxSharp/issues

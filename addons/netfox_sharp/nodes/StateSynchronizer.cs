@@ -9,6 +9,9 @@ public partial class StateSynchronizer : Node
     /// <summary>The node from which the <see cref="properties"/> paths from.</summary>
     [Export]
     Node root;
+    // NOTE: Changing properties at run time is not a common use case iirc, but
+    // there's a chance we run into someone wanting to do that. Implementing
+    // #347 can be a way around it.
     /// <summary>Properties to synchronize from the <see cref="root"/> node.</summary>
     [Export]
     Array<string> properties;
@@ -20,7 +23,7 @@ public partial class StateSynchronizer : Node
     public override void _Ready()
     {
         _stateSynchronizer = (GodotObject)GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd").New();
-        _stateSynchronizer.Set(PropertyNameGd.Name, "RollbackSynchronizer");
+        _stateSynchronizer.Set(PropertyNameGd.Name, "StateSynchronizer");
         _stateSynchronizer.Set(PropertyNameGd.Root, root);
         _stateSynchronizer.Set(PropertyNameGd.Properties, properties);
 

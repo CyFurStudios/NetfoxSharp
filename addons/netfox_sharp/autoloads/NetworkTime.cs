@@ -2,14 +2,16 @@
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Tracks shared network time between players, and provides an event loop for
 /// synchronized game updates.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-time/">
-/// NetworkTime</see> Netfox guide for more information.</para></summary>
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-time/">
+/// NetworkTime</see> netfox guide for more information.</para></summary>
+// NOTE: FYI documentation links have changed to now include version, this
+// needs to be fixed in netfox itself too.
 public partial class NetworkTime : Node
 {
     #region Public Variables

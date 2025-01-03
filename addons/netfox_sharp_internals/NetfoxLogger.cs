@@ -24,13 +24,15 @@ public class NetfoxLogger
         get { return (Dictionary)_staticLogger?.Get(PropertyNameGd.ModuleLogLevel); ; }
         set { _staticLogger?.Set(PropertyNameGd.ModuleLogLevel, value); }
     }
+    // NOTE: Maybe using "belongs to" instead of "comes from" is slightly more accurate.
     /// <summary>The addon/module that the logger comes from.</summary>
     public string Module
     {
         get { return (string)_logger.Get(PropertyNameGd.Module); ; }
         set { _logger.Set(PropertyNameGd.Module, value); }
     }
-    /// <summary>The name of the node that the logger comes from.</summary>
+    // NOTE: Name is just a generic logger name, not tied to node or any real object
+    /// <summary>The name of the logger.</summary>
     public string Name
     {
         get { return (string)_logger.Get(PropertyNameGd.Name); ; }
@@ -43,24 +45,26 @@ public class NetfoxLogger
         _staticLogger = (GodotObject)GD.Load<GDScript>("res://addons/netfox.internals/logger.gd").New("Static Logger", "Static Logger");
     }
 
+    // NOTE: This could be kept public imo; using these loggers during gamedev
+    // can be useful as messages contain networking data
     /// <summary>Internal constructor for instance instantiation.</summary>
     NetfoxLogger(string module, string name)
     {
         _logger = (GodotObject)GD.Load<GDScript>("res://addons/netfox.internals/logger.gd").New(module, name);
     }
 
-    /// <summary>Creates a new logger that uses netfox as the module.</summary>
-    /// <param name="nodeName">The name of the node this logger is used for.</param>
+    /// <summary>Creates a new logger for the netfox module.</summary>
+    /// <param name="name">The name of the logger.</param>
     /// <returns>The logger instance.</returns>
-    public static NetfoxLogger ForNetfox(string nodeName) { return new("netfox", nodeName); }
-    /// <summary>Creates a new logger that uses netfox.noray as the module.</summary>
-    /// <param name="nodeName">The name of the node this logger is used for.</param>
+    public static NetfoxLogger ForNetfox(string name) { return new("netfox", name); }
+    /// <summary>Creates a new logger the netfox.noray module.</summary>
+    /// <param name="name">The name of the logger.</param>
     /// <returns>The logger instance.</returns>
-    public static NetfoxLogger ForNoray(string nodeName) { return new("netfox.noray", nodeName); }
+    public static NetfoxLogger ForNoray(string name) { return new("netfox.noray", name); }
     /// <summary>Creates a new logger that uses netfox.extras as the module.</summary>
-    /// <param name="nodeName">The name of the node this logger is used for.</param>
+    /// <param name="name">The name of the node this logger is used for.</param>
     /// <returns>The logger instance.</returns>
-    public static NetfoxLogger ForExtras(string nodeName) { return new("netfox.extras", nodeName); }
+    public static NetfoxLogger ForExtras(string name) { return new("netfox.extras", name); }
     public static Dictionary MakeSetting(string name) { return (Dictionary)_staticLogger.Call(MethodNameGd.MakeSetting, name); }
     public static void RegisterTag(Callable tag, int priority = 0) { _staticLogger.Call(MethodNameGd.RegisterTag, tag, priority); }
 
@@ -68,6 +72,7 @@ public class NetfoxLogger
     /// <para>Traces should be "I'm here!" messages, nothing more.</para></summary>
     /// <param name="message">The message to be logged.</param>
     public void LogTrace(string message) { _logger.Call(MethodNameGd.Trace, message, new Array()); }
+    // NOTE: Debug logging is not just about showing variables
     /// <summary><para>Logs a message as a Debug.</para>
     /// <para>Debugs should be showing variables.</para></summary>
     /// <param name="message">The message to be logged.</param>

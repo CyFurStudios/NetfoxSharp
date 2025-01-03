@@ -39,13 +39,14 @@ public partial class TickInterpolator : Node
             _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
         }
     }
-    /// <summary>Properties to interpolate from the <see cref="root"/> node.</summary>
+    /// <summary>Properties to interpolate from the <see cref="Root"/> node.</summary>
     public Array<string> Properties
     {
         get { return properties; }
         set
         {
             properties = value;
+            // NOTE: Does this also run when the array is modified?
             _tickInterpolator?.Set(PropertyNameGd.Properties, value);
         }
     }
@@ -75,17 +76,25 @@ public partial class TickInterpolator : Node
     public override void _Ready()
     {
         _tickInterpolator = (GodotObject)GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd").New();
-        _tickInterpolator.Set(PropertyNameGd.Name, "RollbackSynchronizer");
+        _tickInterpolator.Set(PropertyNameGd.Name, "TickInterpolator");
         _tickInterpolator.Set(PropertyNameGd.Root, root);
         _tickInterpolator.Set(PropertyNameGd.Enabled, enabled);
         _tickInterpolator.Set(PropertyNameGd.Properties, properties);
         _tickInterpolator.Set(PropertyNameGd.RecordFirstState, recordFirstState);
         _tickInterpolator.Set(PropertyNameGd.EnableRecording, enableRecording);
 
-        AddChild((Node)_tickInterpolator);
+        // NOTE: What do you think about making these nodes @tool scripts, and
+        // ensuring the wrapped node is there from the editor ( on ready and/or
+        // on scene save )? Pro is reduced instantiation cost for C# nodes,
+        // cons is slightly more code.
+        AddChild((Node)_tickInterpolator, false, InternalMode.Front);
     }
 
     #region Methods
+    // NOTE: Maybe we could set the GD node's arrays to the ones known by the
+    // C# class to make sure all changes are picked up? Similar for the rest of
+    // the nodes.
+    //
     /// <summary>Call this after any change to configuration.</summary>
     public void ProcessSettings() { _tickInterpolator.Call(MethodNameGd.ProcessSettings); }
     /// <summary><para>Check if interpolation can be done.</para>

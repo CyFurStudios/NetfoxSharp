@@ -28,6 +28,8 @@ public partial class NetfoxSharp : EditorPlugin
         new("TickInterpolator", Node)
     };
 
+    // NOTE: Would a struct make sense instead?
+    //
     // Tuple contains
     // string: setting name
     // Variant: default value
@@ -41,6 +43,8 @@ public partial class NetfoxSharp : EditorPlugin
     {
         foreach (Tuple<string, string> node in nodes)
         {
+            // NOTE: What do you think about Sharp as suffix?
+            // Also, using a struct would make this part easier to read, i.e. what's Item1 and Item2
             AddCustomType($"{node.Item1}CS", node.Item2,
                 GD.Load<Script>($"{RootPath}{NodePath}{node.Item1}.cs"),
                 GD.Load<Texture2D>($"{RootPath}{IconPath}{node.Item1}.svg"));
@@ -51,6 +55,7 @@ public partial class NetfoxSharp : EditorPlugin
             if (ProjectSettings.HasSetting(setting.Item1))
                 continue;
 
+            // NOTE: Same note about Item1 and Item2
             ProjectSettings.SetSetting(setting.Item1, setting.Item2);
             ProjectSettings.SetInitialValue(setting.Item1, setting.Item2);
             ProjectSettings.SetAsBasic(setting.Item1, setting.Item3);
@@ -59,6 +64,8 @@ public partial class NetfoxSharp : EditorPlugin
         CallDeferred(MethodName.CheckNetfoxGd);
     }
 
+    // NOTE: Method name is misleading to me - I'd expect it to check if the GD
+    // extension is there, instead it hides GD nodes
     void CheckNetfoxGd()
     {
         // TODO: Currently doesn't work correctly due to class_name in GDScript.

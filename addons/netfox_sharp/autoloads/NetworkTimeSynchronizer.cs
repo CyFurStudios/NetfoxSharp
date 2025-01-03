@@ -2,8 +2,8 @@
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Synchronizes time to the host remote.</para>
 /// 
@@ -11,8 +11,8 @@ namespace Netfox;
 /// samples to figure out clock difference and network latency. These are then used to
 /// gradually adjust the local clock to keep in sync.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-rollback/">
-/// NetworkRollback</see> Netfox guide for more information.</para></summary>
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-rollback/">
+/// NetworkRollback</see> netfox guide for more information.</para></summary>
 public partial class NetworkTimeSynchronizer : Node
 {
     #region Public Variables
