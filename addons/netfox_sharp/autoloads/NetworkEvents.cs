@@ -2,8 +2,8 @@
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Provides convenience signals for multiplayer games.</para>
 /// 
@@ -20,7 +20,7 @@ namespace Netfox;
 /// so as long as network events are enabled, you don't need to manually call start/stop.</para>
 /// 
 /// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-events/">
-/// NetworkEvents</see> Netfox guide for more information.</para></summary>
+/// NetworkEvents</see> netfox guide for more information.</para></summary>
 public partial class NetworkEvents : Node
 {
     #region Public Variables

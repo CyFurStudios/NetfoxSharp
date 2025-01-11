@@ -3,13 +3,13 @@ using Godot.Collections;
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Provides custom monitors for measuring networking performance.</para>
 /// 
 /// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-performance/">
-/// NetworkPerformance</see> Netfox guide for more information.</para></summary>
+/// NetworkPerformance</see> netfox guide for more information.</para></summary>
 public partial class NetworkPerformance : Node
 {
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
