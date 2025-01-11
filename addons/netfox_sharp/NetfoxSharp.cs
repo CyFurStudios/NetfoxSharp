@@ -36,7 +36,7 @@ public partial class NetfoxSharp : EditorPlugin
     {
         foreach (NetfoxNodeData node in nodes)
         {
-            AddCustomType($"{node.NodeName}CS", node.NodeType,
+            AddCustomType($"{node.NodeName}Sharp", node.NodeType,
                 GD.Load<Script>($"{RootPath}{NodePath}{node.NodeName}.cs"),
                 GD.Load<Texture2D>($"{RootPath}{IconPath}{node.NodeName}.svg"));
         }
@@ -65,7 +65,7 @@ public partial class NetfoxSharp : EditorPlugin
     public override void _ExitTree()
     {
         foreach (NetfoxNodeData node in nodes)
-            RemoveCustomType($"{node.NodeName}CS");
+            RemoveCustomType($"{node.NodeName}Sharp");
 
         if ((bool)ProjectSettings.GetSetting(ClearSettings, false))
             foreach (NetfoxSettingData setting in settings)
