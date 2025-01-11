@@ -50,16 +50,6 @@ public partial class NetfoxSharp : EditorPlugin
             ProjectSettings.SetInitialValue(setting.SettingName, setting.DefaultValue);
             ProjectSettings.SetAsBasic(setting.SettingName, setting.IsBasic);
         }
-
-        CallDeferred(MethodName.CheckNetfoxGd);
-    }
-
-    void CheckNetfoxGd()
-    {
-        // TODO: Currently doesn't work correctly due to class_name in GDScript.
-        if ((bool)ProjectSettings.GetSetting(HideGDScriptNodes))
-            foreach (string node in gdNodes)
-                RemoveCustomType(node);
     }
 
     public override void _ExitTree()
