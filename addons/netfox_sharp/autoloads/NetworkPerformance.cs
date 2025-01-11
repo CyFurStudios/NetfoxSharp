@@ -8,7 +8,7 @@ namespace Netfox;
 /// 
 /// <para>Provides custom monitors for measuring networking performance.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-performance/">
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-performance/">
 /// NetworkPerformance</see> netfox guide for more information.</para></summary>
 public partial class NetworkPerformance : Node
 {

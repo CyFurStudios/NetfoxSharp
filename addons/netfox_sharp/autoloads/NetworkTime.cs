@@ -8,7 +8,7 @@ namespace Netfox;
 /// <para>Tracks shared network time between players, and provides an event loop for
 /// synchronized game updates.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-time/">
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-time/">
 /// NetworkTime</see> netfox guide for more information.</para></summary>
 public partial class NetworkTime : Node
 {

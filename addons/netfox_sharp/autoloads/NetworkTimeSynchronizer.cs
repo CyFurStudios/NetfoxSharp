@@ -11,7 +11,7 @@ namespace Netfox;
 /// samples to figure out clock difference and network latency. These are then used to
 /// gradually adjust the local clock to keep in sync.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-rollback/">
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-rollback/">
 /// NetworkRollback</see> netfox guide for more information.</para></summary>
 public partial class NetworkTimeSynchronizer : Node
 {

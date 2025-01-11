@@ -19,7 +19,7 @@ namespace Netfox;
 /// <para><b>NOTE:</b> This class also manages <see cref="NetworkTime"/> start/stop,
 /// so as long as network events are enabled, you don't need to manually call start/stop.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-events/">
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-events/">
 /// NetworkEvents</see> netfox guide for more information.</para></summary>
 public partial class NetworkEvents : Node
 {
