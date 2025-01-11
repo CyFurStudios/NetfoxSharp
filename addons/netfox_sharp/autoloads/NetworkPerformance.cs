@@ -54,10 +54,10 @@ public partial class NetworkPerformance : Node
     /// <summary>Get the ratio of <see cref="GetSentStatePropsCount"/> to <see cref="GetFullStatePropsCount"/>.</summary>
     /// <returns>Ratio of sent properties count to full properties count.</returns>
     private double GetSentStatePropsRatio() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsRatio); }
-    public void PushFullState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullState, dictionary); }
-    public void PushFullStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullStateBroadcast, dictionary); }
-    public void PushSentState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentState, dictionary); }
-    public void PushSentStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentStateBroadcast, dictionary); }
+    private void PushFullState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullState, dictionary); }
+    private void PushFullStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullStateBroadcast, dictionary); }
+    private void PushSentState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentState, dictionary); }
+    private void PushSentStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentStateBroadcast, dictionary); }
     #endregion
 
     #region StringName Constants
