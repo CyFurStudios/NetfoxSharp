@@ -1,6 +1,5 @@
 #if TOOLS
 using Godot;
-using System;
 
 [Tool]
 public partial class NetfoxSharp : EditorPlugin
@@ -11,7 +10,6 @@ public partial class NetfoxSharp : EditorPlugin
         RootPath = "res://addons/netfox_sharp/",
         NodePath = "nodes/",
         IconPath = "icons/",
-
         HideGDScriptNodes = "netfox/sharp/HideGDScriptNodes";
 
     private static readonly string[] gdNodes = new[]
@@ -21,39 +19,35 @@ public partial class NetfoxSharp : EditorPlugin
         "TickInterpolator"
     };
 
-    private static readonly Tuple<string, string>[] nodes = new Tuple<string, string>[]
+    private static readonly NetfoxNodeData[] nodes = new NetfoxNodeData[]
     {
         new("RollbackSynchronizer", Node),
         new("StateSynchronizer", Node),
         new("TickInterpolator", Node)
     };
 
-    // Tuple contains
-    // string: setting name
-    // Variant: default value
-    // bool: true if the setting is basic
-    public static readonly Tuple<string, Variant, bool>[] settings = new Tuple<string, Variant, bool>[]
+    private static readonly NetfoxSettingData[] settings = new NetfoxSettingData[]
     {
         new(HideGDScriptNodes, true, true)
     };
 
     public override void _EnterTree()
     {
-        foreach (Tuple<string, string> node in nodes)
+        foreach (NetfoxNodeData node in nodes)
         {
-            AddCustomType($"{node.Item1}CS", node.Item2,
-                GD.Load<Script>($"{RootPath}{NodePath}{node.Item1}.cs"),
-                GD.Load<Texture2D>($"{RootPath}{IconPath}{node.Item1}.svg"));
+            AddCustomType($"{node.NodeName}CS", node.NodeType,
+                GD.Load<Script>($"{RootPath}{NodePath}{node.NodeName}.cs"),
+                GD.Load<Texture2D>($"{RootPath}{IconPath}{node.NodeName}.svg"));
         }
 
-        foreach (Tuple<string, Variant, bool> setting in settings)
+        foreach (NetfoxSettingData setting in settings)
         {
-            if (ProjectSettings.HasSetting(setting.Item1))
+            if (ProjectSettings.HasSetting(setting.SettingName))
                 continue;
 
-            ProjectSettings.SetSetting(setting.Item1, setting.Item2);
-            ProjectSettings.SetInitialValue(setting.Item1, setting.Item2);
-            ProjectSettings.SetAsBasic(setting.Item1, setting.Item3);
+            ProjectSettings.SetSetting(setting.SettingName, setting.DefaultValue);
+            ProjectSettings.SetInitialValue(setting.SettingName, setting.DefaultValue);
+            ProjectSettings.SetAsBasic(setting.SettingName, setting.IsBasic);
         }
 
         CallDeferred(MethodName.CheckNetfoxGd);
@@ -69,12 +63,38 @@ public partial class NetfoxSharp : EditorPlugin
 
     public override void _ExitTree()
     {
-        foreach (Tuple<string, string> node in nodes)
-            RemoveCustomType($"{node.Item1}CS");
+        foreach (NetfoxNodeData node in nodes)
+            RemoveCustomType($"{node.NodeName}CS");
 
         if ((bool)ProjectSettings.GetSetting("netfox/general/clear_settings", false))
-            foreach (Tuple<string, Variant, bool> setting in settings)
-                ProjectSettings.SetSetting(setting.Item1, new());
+            foreach (NetfoxSettingData setting in settings)
+                ProjectSettings.SetSetting(setting.SettingName, new());
+    }
+
+    class NetfoxNodeData
+    {
+        public readonly string NodeName;
+        public readonly string NodeType;
+
+        public NetfoxNodeData(string nodeName, string nodeType)
+        {
+            NodeName = nodeName;
+            NodeType = nodeType;
+        }
+    }
+
+    class NetfoxSettingData
+    {
+        public readonly string SettingName;
+        public readonly Variant DefaultValue;
+        public readonly bool IsBasic;
+
+        public NetfoxSettingData(string settingName, Variant defaultValue, bool isBasic)
+        {
+            SettingName = settingName;
+            DefaultValue = defaultValue;
+            IsBasic = isBasic;
+        }
     }
 }
 #endif
