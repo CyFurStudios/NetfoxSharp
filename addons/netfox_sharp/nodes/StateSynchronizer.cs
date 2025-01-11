@@ -19,8 +19,8 @@ public partial class StateSynchronizer : Node
 
     public override void _Ready()
     {
-        _stateSynchronizer = (GodotObject)GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd").New();
-        _stateSynchronizer.Set(PropertyNameGd.Name, "RollbackSynchronizer");
+        _stateSynchronizer = (GodotObject)GD.Load<GDScript>("res://addons/netfox/state-synchronizer.gd").New();
+        _stateSynchronizer.Set(PropertyNameGd.Name, "StateSynchronizer");
         _stateSynchronizer.Set(PropertyNameGd.Root, root);
         _stateSynchronizer.Set(PropertyNameGd.Properties, properties);
 

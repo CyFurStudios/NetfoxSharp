@@ -39,7 +39,7 @@ public partial class TickInterpolator : Node
             _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
         }
     }
-    /// <summary>Properties to interpolate from the <see cref="root"/> node.</summary>
+    /// <summary>Properties to interpolate from the <see cref="Root"/> node.</summary>
     public Array<string> Properties
     {
         get { return properties; }
@@ -74,8 +74,8 @@ public partial class TickInterpolator : Node
 
     public override void _Ready()
     {
-        _tickInterpolator = (GodotObject)GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd").New();
-        _tickInterpolator.Set(PropertyNameGd.Name, "RollbackSynchronizer");
+        _tickInterpolator = (GodotObject)GD.Load<GDScript>("res://addons/netfox/tick-interpolator.gd").New();
+        _tickInterpolator.Set(PropertyNameGd.Name, "TickInterpolator");
         _tickInterpolator.Set(PropertyNameGd.Root, root);
         _tickInterpolator.Set(PropertyNameGd.Enabled, enabled);
         _tickInterpolator.Set(PropertyNameGd.Properties, properties);
