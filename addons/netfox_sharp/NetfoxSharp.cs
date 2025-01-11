@@ -10,7 +10,8 @@ public partial class NetfoxSharp : EditorPlugin
         RootPath = "res://addons/netfox_sharp/",
         NodePath = "nodes/",
         IconPath = "icons/",
-        HideGDScriptNodes = "netfox/sharp/HideGDScriptNodes";
+        HideGDScriptNodes = "netfox/sharp/HideGDScriptNodes",
+        ClearSettings = "netfox/general/clear_settings";
 
     private static readonly string[] gdNodes = new[]
     {
@@ -66,7 +67,7 @@ public partial class NetfoxSharp : EditorPlugin
         foreach (NetfoxNodeData node in nodes)
             RemoveCustomType($"{node.NodeName}CS");
 
-        if ((bool)ProjectSettings.GetSetting("netfox/general/clear_settings", false))
+        if ((bool)ProjectSettings.GetSetting(ClearSettings, false))
             foreach (NetfoxSettingData setting in settings)
                 ProjectSettings.SetSetting(setting.SettingName, new());
     }
