@@ -30,30 +30,30 @@ public partial class NetworkPerformance : Node
     /// <summary>Get time spent in the last network tick loop, including time spent
     /// in the rollback tick loop.</summary>
     /// <returns>The total time, in msec.</returns>
-    public double GetNetworkLoopDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetNetworkLoopDurationMs); }
+    private double GetNetworkLoopDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetNetworkLoopDurationMs); }
     /// <summary>Get the number of ticks simulated in the last network tick loop.</summary>
     /// <returns>The number of ticks simulated.</returns>
-    public long GetNetworkTicks() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetNetworkTicks); }
+    private long GetNetworkTicks() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetNetworkTicks); }
     /// <summary>Get time spent in the last rollback tick loop.</summary>
     /// <returns>The total time, in msec.</returns>
-    public double GetRollbackLoopDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetRollbackLoopDurationMs); }
+    private double GetRollbackLoopDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetRollbackLoopDurationMs); }
     /// <summary>Get the number of ticks resimulated in the last rollback tick loop.</summary>
     /// <returns>The number of ticks resimulated.</returns>
-    public long GetRollbackTicks() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetRollbackTicks); }
+    private long GetRollbackTicks() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetRollbackTicks); }
     /// <summary>Get the average amount of time spent in a rollback tick during the last
     /// rollback loop.</summary>
     /// <returns>The average time, in msec.</returns>
-    public double GetRollbackTickDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetRollbackTickDurationMs); }
+    private double GetRollbackTickDurationMs() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetRollbackTickDurationMs); }
     /// <summary>Get the number of properties in the full state recorded during the last tick
     /// loop.</summary>
     /// <returns>The number of properties in the full state.</returns>
-    public long GetFullStatePropsCount() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetFullStatePropsCount); }
+    private long GetFullStatePropsCount() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetFullStatePropsCount); }
     /// <summary>Get the number of properties actually sent during the last tick loop.</summary>
     /// <returns>The number of properties sent.</returns>
-    public long GetSentStatePropsCount() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsCount); }
+    private long GetSentStatePropsCount() { return (long)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsCount); }
     /// <summary>Get the ratio of <see cref="GetSentStatePropsCount"/> to <see cref="GetFullStatePropsCount"/>.</summary>
     /// <returns>Ratio of sent properties count to full properties count.</returns>
-    public double GetSentStatePropsRatio() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsRatio); }
+    private double GetSentStatePropsRatio() { return (double)_networkPerformanceGd.Call(MethodNameGd.GetSentStatePropsRatio); }
     public void PushFullState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullState, dictionary); }
     public void PushFullStateBroadcast(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushFullStateBroadcast, dictionary); }
     public void PushSentState(Dictionary dictionary) { _networkPerformanceGd.Call(MethodNameGd.PushSentState, dictionary); }
