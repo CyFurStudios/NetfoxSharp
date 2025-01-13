@@ -6,81 +6,90 @@ namespace Netfox;
 public partial class TickInterpolator : Node
 {
     #region Exports
-    [Export]
-    Node root;
-    [Export]
-    bool enabled;
-    [Export]
-    Array<string> properties;
-    [Export]
-    bool recordFirstState;
-    [Export]
-    bool enableRecording;
-    #endregion
-
-    #region Public Variables
     /// <summary>The node from which the <see cref="Properties"/> paths from.</summary>
+    [Export]
     public Node Root
     {
-        get { return root; }
+        get { return _root; }
         set
         {
-            root = value;
+            _root = value;
             _tickInterpolator?.Set(PropertyNameGd.Root, value);
         }
     }
+    Node _root;
+
     /// <summary>Whether the tick interpolator is enabled.</summary>
+    [Export]
     public bool Enabled
     {
-        get { return enabled; }
+        get { return _enabled; }
         set
         {
-            enabled = value;
+            _enabled = value;
             _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
         }
     }
+    bool _enabled;
+
     /// <summary>Properties to interpolate from the <see cref="Root"/> node.</summary>
+    [Export]
     public Array<string> Properties
     {
-        get { return properties; }
+        get { return _properties; }
         set
         {
-            properties = value;
+            _properties = value;
             _tickInterpolator?.Set(PropertyNameGd.Properties, value);
         }
     }
+    Array<string> _properties;
+
+    [Export]
     public bool RecordFirstState
     {
-        get { return recordFirstState; }
+        get { return _recordFirstState; }
         set
         {
-            enabled = value;
+            _enabled = value;
             _tickInterpolator?.Set(PropertyNameGd.RecordFirstState, value);
         }
     }
+    bool _recordFirstState;
+
+    [Export]
     public bool EnableRecording
     {
-        get { return enableRecording; }
+        get { return _enableRecording; }
         set
         {
-            enabled = value;
+            _enabled = value;
             _tickInterpolator?.Set(PropertyNameGd.EnableRecording, value);
         }
     }
+    bool _enableRecording;
     #endregion
+
+    /// <summary>The GDScript script used to instance TickInterpolator.</summary>
+    static readonly GDScript _script;
 
     /// <summary>Internal reference of the TickInterpolator GDScript node.</summary>
     GodotObject _tickInterpolator;
 
+    static TickInterpolator()
+    {
+        _script = GD.Load<GDScript>("res://addons/netfox/tick-interpolator.gd");
+    }
+
     public override void _Ready()
     {
-        _tickInterpolator = (GodotObject)GD.Load<GDScript>("res://addons/netfox/tick-interpolator.gd").New();
+        _tickInterpolator = (GodotObject)_script.New();
         _tickInterpolator.Set(PropertyNameGd.Name, "TickInterpolator");
-        _tickInterpolator.Set(PropertyNameGd.Root, root);
-        _tickInterpolator.Set(PropertyNameGd.Enabled, enabled);
-        _tickInterpolator.Set(PropertyNameGd.Properties, properties);
-        _tickInterpolator.Set(PropertyNameGd.RecordFirstState, recordFirstState);
-        _tickInterpolator.Set(PropertyNameGd.EnableRecording, enableRecording);
+        _tickInterpolator.Set(PropertyNameGd.Root, Root);
+        _tickInterpolator.Set(PropertyNameGd.Enabled, Enabled);
+        _tickInterpolator.Set(PropertyNameGd.Properties, Properties);
+        _tickInterpolator.Set(PropertyNameGd.RecordFirstState, RecordFirstState);
+        _tickInterpolator.Set(PropertyNameGd.EnableRecording, EnableRecording);
 
         AddChild((Node)_tickInterpolator);
     }
