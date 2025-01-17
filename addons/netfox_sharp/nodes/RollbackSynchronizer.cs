@@ -4,7 +4,6 @@ using Godot.Collections;
 namespace Netfox;
 
 /// <summary>Responsible for synchronizing data between players, with support for rollback.</summary>
-[Tool]
 public partial class RollbackSynchronizer : Node
 {
     #region Exports
@@ -17,7 +16,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _root = value;
-            _rollbackSync?.Set(PropertyNameGd.Root, _root);
+            _rollbackSync.Set(PropertyNameGd.Root, _root);
         }
     }
     Node _root;
@@ -31,7 +30,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _stateProperties = value;
-            _rollbackSync?.Set(PropertyNameGd.StateProperties, _stateProperties);
+            _rollbackSync.Set(PropertyNameGd.StateProperties, _stateProperties);
         }
     }
     Array<string> _stateProperties;
@@ -48,7 +47,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _fullStateInterval = value;
-            _rollbackSync?.Set(PropertyNameGd.FullStateInterval, _fullStateInterval);
+            _rollbackSync.Set(PropertyNameGd.FullStateInterval, _fullStateInterval);
         }
     }
     int _fullStateInterval = 24;
@@ -68,7 +67,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _diffAckInterval = value;
-            _rollbackSync?.Set(PropertyNameGd.DiffAckInterval, _diffAckInterval);
+            _rollbackSync.Set(PropertyNameGd.DiffAckInterval, _diffAckInterval);
         }
     }
     int _diffAckInterval = 24;
@@ -82,7 +81,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _inputProperties = value;
-            _rollbackSync?.Set(PropertyNameGd.InputProperties, _inputProperties);
+            _rollbackSync.Set(PropertyNameGd.InputProperties, _inputProperties);
         }
     }
     Array<string> _inputProperties;
@@ -96,7 +95,7 @@ public partial class RollbackSynchronizer : Node
         set
         {
             _enableInputBroadcast = value;
-            _rollbackSync?.Set(PropertyNameGd.EnableInputBroadcast, _enableInputBroadcast);
+            _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, _enableInputBroadcast);
         }
     }
     bool _enableInputBroadcast = false;
@@ -113,10 +112,11 @@ public partial class RollbackSynchronizer : Node
         _script = GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd");
     }
 
-    public override void _Ready()
+    public RollbackSynchronizer()
     {
         _rollbackSync = (GodotObject)_script.New();
-        _rollbackSync.Set(PropertyNameGd.Name, "InternalRollbackSync");
+
+        _rollbackSync.Set(PropertyNameGd.Name, "InternalRollbackSynchronizer");
         _rollbackSync.Set(PropertyNameGd.Root, Root);
         _rollbackSync.Set(PropertyNameGd.StateProperties, StateProperties);
         _rollbackSync.Set(PropertyNameGd.FullStateInterval, FullStateInterval);

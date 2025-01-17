@@ -3,6 +3,7 @@ using Godot.Collections;
 
 namespace Netfox;
 
+/// <summary>Responsible for synchronizing state from the node's authority to other peers.</summary>
 public partial class StateSynchronizer : Node
 {
     #region Exports
@@ -14,7 +15,7 @@ public partial class StateSynchronizer : Node
         set
         {
             _root = value;
-            _stateSynchronizer?.Set(PropertyNameGd.Root, _root);
+            _stateSynchronizer.Set(PropertyNameGd.Root, _root);
         }
     }
     Node _root;
@@ -26,7 +27,7 @@ public partial class StateSynchronizer : Node
         set
         {
             _properties = value;
-            _stateSynchronizer?.Set(PropertyNameGd.Properties, _properties);
+            _stateSynchronizer.Set(PropertyNameGd.Properties, _properties);
         }
     }
     Array<string> _properties;
@@ -43,14 +44,15 @@ public partial class StateSynchronizer : Node
         _script = GD.Load<GDScript>("res://addons/netfox/state-synchronizer.gd");
     }
 
-    public override void _Ready()
+    public StateSynchronizer()
     {
         _stateSynchronizer = (GodotObject)_script.New();
-        _stateSynchronizer.Set(PropertyNameGd.Name, "StateSynchronizer");
+
+        _stateSynchronizer.Set(PropertyNameGd.Name, "InternalStateSynchronizer");
         _stateSynchronizer.Set(PropertyNameGd.Root, Root);
         _stateSynchronizer.Set(PropertyNameGd.Properties, Properties);
 
-        AddChild((Node)_stateSynchronizer);
+        AddChild((Node)_stateSynchronizer, @internal: InternalMode.Back);
     }
 
     #region Methods

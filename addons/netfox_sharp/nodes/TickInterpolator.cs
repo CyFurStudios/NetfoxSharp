@@ -3,6 +3,7 @@ using Godot.Collections;
 
 namespace Netfox;
 
+/// <summary>Responsible for interpolating fields between network ticks, resulting in smoother motion.</summary>
 public partial class TickInterpolator : Node
 {
     #region Exports
@@ -14,7 +15,7 @@ public partial class TickInterpolator : Node
         set
         {
             _root = value;
-            _tickInterpolator?.Set(PropertyNameGd.Root, value);
+            _tickInterpolator.Set(PropertyNameGd.Root, value);
         }
     }
     Node _root;
@@ -27,7 +28,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
+            _tickInterpolator.Set(PropertyNameGd.Enabled, value);
         }
     }
     bool _enabled;
@@ -40,7 +41,7 @@ public partial class TickInterpolator : Node
         set
         {
             _properties = value;
-            _tickInterpolator?.Set(PropertyNameGd.Properties, value);
+            _tickInterpolator.Set(PropertyNameGd.Properties, value);
         }
     }
     Array<string> _properties;
@@ -52,7 +53,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator?.Set(PropertyNameGd.RecordFirstState, value);
+            _tickInterpolator.Set(PropertyNameGd.RecordFirstState, value);
         }
     }
     bool _recordFirstState;
@@ -64,7 +65,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator?.Set(PropertyNameGd.EnableRecording, value);
+            _tickInterpolator.Set(PropertyNameGd.EnableRecording, value);
         }
     }
     bool _enableRecording;
@@ -81,17 +82,18 @@ public partial class TickInterpolator : Node
         _script = GD.Load<GDScript>("res://addons/netfox/tick-interpolator.gd");
     }
 
-    public override void _Ready()
+    public TickInterpolator()
     {
         _tickInterpolator = (GodotObject)_script.New();
-        _tickInterpolator.Set(PropertyNameGd.Name, "TickInterpolator");
+
+        _tickInterpolator.Set(PropertyNameGd.Name, "InternalTickInterpolator");
         _tickInterpolator.Set(PropertyNameGd.Root, Root);
         _tickInterpolator.Set(PropertyNameGd.Enabled, Enabled);
         _tickInterpolator.Set(PropertyNameGd.Properties, Properties);
         _tickInterpolator.Set(PropertyNameGd.RecordFirstState, RecordFirstState);
         _tickInterpolator.Set(PropertyNameGd.EnableRecording, EnableRecording);
 
-        AddChild((Node)_tickInterpolator);
+        AddChild((Node)_tickInterpolator, @internal: InternalMode.Back);
     }
 
     #region Methods
