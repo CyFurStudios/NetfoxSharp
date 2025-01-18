@@ -124,7 +124,7 @@ public partial class RollbackSynchronizer : Node
         _rollbackSync.Set(PropertyNameGd.InputProperties, InputProperties);
         _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, EnableInputBroadcast);
 
-        AddChild((Node)_rollbackSync, @internal: InternalMode.Back);
+        AddChild((Node)_rollbackSync, forceReadableName: true, @internal: InternalMode.Back);
     }
 
     #region Methods

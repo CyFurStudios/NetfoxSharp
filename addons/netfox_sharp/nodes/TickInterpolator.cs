@@ -93,7 +93,7 @@ public partial class TickInterpolator : Node
         _tickInterpolator.Set(PropertyNameGd.RecordFirstState, RecordFirstState);
         _tickInterpolator.Set(PropertyNameGd.EnableRecording, EnableRecording);
 
-        AddChild((Node)_tickInterpolator, @internal: InternalMode.Back);
+        AddChild((Node)_tickInterpolator, forceReadableName: true, @internal: InternalMode.Back);
     }
 
     #region Methods
