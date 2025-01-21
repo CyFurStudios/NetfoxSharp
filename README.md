@@ -22,8 +22,8 @@ with the [netfox](https://github.com/foxssake/netfox/) addon.
 
 ## Install
 
-* Download the repo, and move the netfox_sharp folder into the addons of a C#-enabled
-Godot project
+* Download the repo, and move the netfox_sharp and netfox_sharp_internals folders into the addons of a C#-enabled
+Godot project.
 in the .NET version of Godot 4.x.
 * Install the netfox addon, which can be found at the link above.
 * Build your project, then enable netfox and Netfox Sharp in your project settings.
