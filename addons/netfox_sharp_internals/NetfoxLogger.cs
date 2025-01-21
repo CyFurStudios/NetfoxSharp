@@ -62,24 +62,19 @@ public class NetfoxLogger
     public static Dictionary MakeSetting(string name) { return (Dictionary)_staticLogger.Call(MethodNameGd.MakeSetting, name); }
     public static void RegisterTag(Callable tag, int priority = 0) { _staticLogger.Call(MethodNameGd.RegisterTag, tag, priority); }
 
-    /// <summary><para>Logs a message as a Trace.</para>
-    /// <para>Traces should be "I'm here!" messages, nothing more.</para></summary>
+    /// <summary><para>Logs a message as a Trace.</para></summary>
     /// <param name="message">The message to be logged.</param>
     public void LogTrace(string message) { _logger.Call(MethodNameGd.Trace, message, new Array()); }
-    /// <summary><para>Logs a message as a Debug.</para>
-    /// <para>Debugs should be showing variables.</para></summary>
+    /// <summary><para>Logs a message as a Debug.</para></summary>
     /// <param name="message">The message to be logged.</param>
     public void LogDebug(string message) { _logger.Call(MethodNameGd.Debug, message, new Array()); }
-    /// <summary><para>Logs a message as Info.</para>
-    /// <para>Info should be letting you know of changes, IE "Connected to Server".</para></summary>
+    /// <summary><para>Logs a message as Info.</para></summary>
     /// <param name="message">The message to be logged.</param>
     public void LogInfo(string message) { _logger.Call(MethodNameGd.Info, message, new Array()); }
-    /// <summary><para>Logs a message as a Warning.</para>
-    /// <para>Warnings should be letting you know of issues that you can recover from.</para></summary>
+    /// <summary><para>Logs a message as a Warning.</para></summary>
     /// <param name="message">The warning to be logged.</param>
     public void LogWarning(string message) { _logger.Call(MethodNameGd.Warning, message, new Array()); }
-    /// <summary><para>Logs a message as an Error.</para>
-    /// <para>Errors should be letting you know of issues that you can't recover from.</para></summary>
+    /// <summary><para>Logs a message as an Error.</para></summary>
     /// <param name="message">The error to be logged.</param>
     public void LogError(string message) { _logger.Call(MethodNameGd.Error, message, new Array()); }
 
