@@ -46,7 +46,7 @@ public partial class NetworkTimeSynchronizer : Node
     /// <summary>Internal reference of the NetworkTimeSynchronizer GDScript autoload.</summary>
     GodotObject _networkTimeSynchronizerGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkTimeSynchronizer GDScript autoload.</param>
     internal NetworkTimeSynchronizer(GodotObject networkTimeGd)
     {

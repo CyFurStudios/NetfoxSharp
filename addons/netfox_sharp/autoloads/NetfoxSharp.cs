@@ -4,7 +4,7 @@ using Netfox.Logging;
 namespace Netfox;
 
 /// <summary>Used in place of godot autoloads for the netfox plugin.</summary>
-public partial class NetfoxCore : Node
+public partial class NetfoxSharp : Node
 {
     /// <summary>Reference to the netfox autoload NetworkTime.</summary>
     public static NetworkTime NetworkTime;
@@ -16,6 +16,7 @@ public partial class NetfoxCore : Node
     public static NetworkEvents NetworkEvents;
     /// <summary>Reference to the netfox autoload NetworkPerformance.</summary>
     public static NetworkPerformance NetworkPerformance;
+    // TODO: 
     /// <summary>An instance of NetfoxLogger.</summary>
     public static NetfoxLogger Logger;
 
@@ -27,7 +28,7 @@ public partial class NetfoxCore : Node
         NetworkRollback = new(GetNode("/root/NetworkRollback"));
         NetworkEvents = new(GetNode("/root/NetworkEvents"));
         NetworkPerformance = new(GetNode("/root/NetworkPerformance"));
-        Logger = NetfoxLogger.ForNetfox("NetfoxCore");
+        Logger = NetfoxLogger.ForNetfox("NetfoxSharp");
     }
 }
 

@@ -2,7 +2,7 @@
 using Godot;
 
 [Tool]
-public partial class NetfoxSharp : EditorPlugin
+public partial class NetfoxSharpPlugin : EditorPlugin
 {
     private static readonly string
         Node = "Node",

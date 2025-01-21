@@ -46,7 +46,7 @@ public partial class NetworkRollback : Node
     /// <summary>Internal reference of the NetworkRollback GDScript autoload.</summary>
     GodotObject _networkRollbackGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkRollback GDScript autoload.</param>
     internal NetworkRollback(GodotObject networkTimeGd)
     {

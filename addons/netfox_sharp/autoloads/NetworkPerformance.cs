@@ -15,7 +15,7 @@ public partial class NetworkPerformance : Node
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
     GodotObject _networkPerformanceGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>.
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>.
     /// Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkTime GDScript autoload.</param>
     internal NetworkPerformance(GodotObject networkTimeGd)

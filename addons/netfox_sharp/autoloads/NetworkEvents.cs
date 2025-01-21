@@ -38,7 +38,7 @@ public partial class NetworkEvents : Node
     /// <summary>Internal reference of the NetworkEvents GDScript autoload.</summary>
     GodotObject _networkEventsGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkEvents GDScript autoload.</param>
     internal NetworkEvents(GodotObject networkTimeGd)
     {

@@ -102,7 +102,7 @@ public partial class NetworkTime : Node
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
     GodotObject _networkTimeGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkRollback GDScript autoload.</param>
     public NetworkTime(GodotObject networkTimeGd)
     {
