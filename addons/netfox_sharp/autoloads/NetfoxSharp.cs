@@ -14,9 +14,7 @@ public partial class NetfoxSharp : Node
     public static NetworkRollback NetworkRollback;
     /// <summary>Reference to the netfox autoload NetworkEvents.</summary>
     public static NetworkEvents NetworkEvents;
-    /// <summary>Reference to the netfox autoload NetworkPerformance.</summary>
-    public static NetworkPerformance NetworkPerformance;
-    // TODO: 
+
     /// <summary>An instance of NetfoxLogger.</summary>
     public static NetfoxLogger Logger;
 
@@ -27,7 +25,6 @@ public partial class NetfoxSharp : Node
         NetworkTimeSynchronizer = new(GetNode("/root/NetworkTimeSynchronizer"));
         NetworkRollback = new(GetNode("/root/NetworkRollback"));
         NetworkEvents = new(GetNode("/root/NetworkEvents"));
-        NetworkPerformance = new(GetNode("/root/NetworkPerformance"));
         Logger = NetfoxLogger.ForNetfox("NetfoxSharp");
     }
 }
