@@ -2,8 +2,8 @@
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Provides convenience signals for multiplayer games.</para>
 /// 
@@ -19,8 +19,8 @@ namespace Netfox;
 /// <para><b>NOTE:</b> This class also manages <see cref="NetworkTime"/> start/stop,
 /// so as long as network events are enabled, you don't need to manually call start/stop.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-events/">
-/// NetworkEvents</see> Netfox guide for more information.</para></summary>
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-events/">
+/// NetworkEvents</see> netfox guide for more information.</para></summary>
 public partial class NetworkEvents : Node
 {
     #region Public Variables
@@ -38,7 +38,7 @@ public partial class NetworkEvents : Node
     /// <summary>Internal reference of the NetworkEvents GDScript autoload.</summary>
     GodotObject _networkEventsGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkEvents GDScript autoload.</param>
     internal NetworkEvents(GodotObject networkTimeGd)
     {

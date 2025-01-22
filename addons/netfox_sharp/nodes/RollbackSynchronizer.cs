@@ -7,15 +7,33 @@ namespace Netfox;
 public partial class RollbackSynchronizer : Node
 {
     #region Exports
-    /// <summary>The node from which the <see cref="inputProperties"/> and
-    /// <see cref="stateProperties"/> paths from.</summary>
+    /// <summary>The node from which the <see cref="InputProperties"/> and
+    /// <see cref="StateProperties"/> paths from.</summary>
     [Export]
-    Node root;
+    public Node Root
+    {
+        get { return _root; }
+        set
+        {
+            _root = value;
+            _rollbackSync.Set(PropertyNameGd.Root, _root);
+        }
+    }
+    Node _root;
 
-    /// <summary>State properties to roll back from the <see cref="root"/> node.</summary>
+    /// <summary>State properties to roll back from the <see cref="Root"/> node.</summary>
     [ExportGroup("States")]
     [Export]
-    Array<string> stateProperties;
+    public Array<string> StateProperties
+    {
+        get { return _stateProperties; }
+        set
+        {
+            _stateProperties = value;
+            _rollbackSync.Set(PropertyNameGd.StateProperties, _stateProperties);
+        }
+    }
+    Array<string> _stateProperties;
 
     /// <summary><para>Ticks to wait between sending full states.</para>
     /// <para>If set to 0, full states will never be sent. If set to 1, only full states
@@ -23,7 +41,16 @@ public partial class RollbackSynchronizer : Node
     /// for every tick.</para>
     /// <para>Only considered if <see cref="NetworkRollback.EnableDiffStates"/> is true.</para></summary>
     [Export(PropertyHint.Range, "0,128,1,or_greater")]
-    int fullStateInterval = 24;
+    public int FullStateInterval
+    {
+        get { return _fullStateInterval; }
+        set
+        {
+            _fullStateInterval = value;
+            _rollbackSync.Set(PropertyNameGd.FullStateInterval, _fullStateInterval);
+        }
+    }
+    int _fullStateInterval = 24;
 
     /// <summary><para>Ticks to wait between unreliably acknowledging diff states.</para>
     /// <para>This can reduce the amount of properties sent in diff states, due to clients
@@ -34,34 +61,70 @@ public partial class RollbackSynchronizer : Node
     /// not for every diff state.</para>
     /// <para>Only considered if <see cref="NetworkRollback.EnableDiffStates"/> is true.</para></summary>
     [Export(PropertyHint.Range, "0,128,1,or_greater")]
-    int diffAckInterval = 24;
+    public int DiffAckInterval
+    {
+        get { return _diffAckInterval; }
+        set
+        {
+            _diffAckInterval = value;
+            _rollbackSync.Set(PropertyNameGd.DiffAckInterval, _diffAckInterval);
+        }
+    }
+    int _diffAckInterval = 24;
 
-    /// <summary>Input properties to roll back from the <see cref="root"/> node.</summary>
+    /// <summary>Input properties to roll back from the <see cref="Root"/> node.</summary>
     [ExportGroup("Inputs")]
     [Export]
-    Array<string> inputProperties;
+    public Array<string> InputProperties
+    {
+        get { return _inputProperties; }
+        set
+        {
+            _inputProperties = value;
+            _rollbackSync.Set(PropertyNameGd.InputProperties, _inputProperties);
+        }
+    }
+    Array<string> _inputProperties;
 
     /// <summary>This will broadcast input to all peers, turning this off will limit to sending it
     /// to the server only. Recommended not to use unless needed due to bandwidth considerations.</summary>
     [Export]
-    bool enableInputBroadcast = false;
+    public bool EnableInputBroadcast
+    {
+        get { return _enableInputBroadcast; }
+        set
+        {
+            _enableInputBroadcast = value;
+            _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, _enableInputBroadcast);
+        }
+    }
+    bool _enableInputBroadcast = false;
     #endregion
+
+    /// <summary>The GDScript script used to instance RollbackSynchronizer.</summary>
+    static readonly GDScript _script;
 
     /// <summary>Internal reference of the RollbackSynchronizer GDScript node.</summary>
     GodotObject _rollbackSync;
 
-    public override void _Ready()
+    static RollbackSynchronizer()
     {
-        _rollbackSync = (GodotObject)GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd").New();
-        _rollbackSync.Set(PropertyNameGd.Name, "RollbackSynchronizer");
-        _rollbackSync.Set(PropertyNameGd.Root, root);
-        _rollbackSync.Set(PropertyNameGd.StateProperties, stateProperties);
-        _rollbackSync.Set(PropertyNameGd.FullStateInterval, fullStateInterval);
-        _rollbackSync.Set(PropertyNameGd.DiffAckInterval, diffAckInterval);
-        _rollbackSync.Set(PropertyNameGd.InputProperties, inputProperties);
-        _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, enableInputBroadcast);
+        _script = GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd");
+    }
 
-        AddChild((Node)_rollbackSync);
+    public RollbackSynchronizer()
+    {
+        _rollbackSync = (GodotObject)_script.New();
+
+        _rollbackSync.Set(PropertyNameGd.Name, "InternalRollbackSynchronizer");
+        _rollbackSync.Set(PropertyNameGd.Root, Root);
+        _rollbackSync.Set(PropertyNameGd.StateProperties, StateProperties);
+        _rollbackSync.Set(PropertyNameGd.FullStateInterval, FullStateInterval);
+        _rollbackSync.Set(PropertyNameGd.DiffAckInterval, DiffAckInterval);
+        _rollbackSync.Set(PropertyNameGd.InputProperties, InputProperties);
+        _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, EnableInputBroadcast);
+
+        AddChild((Node)_rollbackSync, forceReadableName: true, @internal: InternalMode.Back);
     }
 
     #region Methods

@@ -2,13 +2,13 @@
 
 namespace Netfox;
 
-/// <summary><para>C# wrapper for Fox's Sake <see href="https://github.com/foxssake/netfox/">
-/// Netfox</see> addon.</para>
+/// <summary><para>C# wrapper for Fox's Sake Studio's <see href="https://github.com/foxssake/netfox/">
+/// netfox</see> addon.</para>
 /// 
 /// <para>Orchestrates the network rollback loop.</para>
 /// 
-/// <para>See the <see href="https://foxssake.github.io/netfox/netfox/guides/network-rollback/">
-/// NetworkRollback</see> Netfox guide for more information.</para></summary>
+/// <para>See the <see href="https://foxssake.github.io/netfox/latest/netfox/guides/network-rollback/">
+/// NetworkRollback</see> netfox guide for more information.</para></summary>
 public partial class NetworkRollback : Node
 {
     #region Public Variables
@@ -46,7 +46,7 @@ public partial class NetworkRollback : Node
     /// <summary>Internal reference of the NetworkRollback GDScript autoload.</summary>
     GodotObject _networkRollbackGd;
 
-    /// <summary>Internal constructor used by <see cref="NetfoxCore"/>. Should not be used elsewhere.</summary>
+    /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkRollback GDScript autoload.</param>
     internal NetworkRollback(GodotObject networkTimeGd)
     {
