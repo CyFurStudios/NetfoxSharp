@@ -10,6 +10,7 @@ public partial class NetfoxSharpPlugin : EditorPlugin
         RootPath = "res://addons/netfox_sharp/",
         NodePath = "nodes/",
         IconPath = "icons/",
+        AutoloadPath = "autoloads/",
         HideGDScriptNodes = "netfox/sharp/HideGDScriptNodes",
         ClearSettings = "netfox/general/clear_settings";
 
@@ -25,6 +26,11 @@ public partial class NetfoxSharpPlugin : EditorPlugin
         new("RollbackSynchronizer", Node),
         new("StateSynchronizer", Node),
         new("TickInterpolator", Node)
+    };
+
+    private static readonly string[] autoloads = new[]
+    {
+        "NetfoxSharp"
     };
 
     private static readonly NetfoxSettingData[] settings = new NetfoxSettingData[]
@@ -50,6 +56,11 @@ public partial class NetfoxSharpPlugin : EditorPlugin
             ProjectSettings.SetInitialValue(setting.SettingName, setting.DefaultValue);
             ProjectSettings.SetAsBasic(setting.SettingName, setting.IsBasic);
         }
+
+        foreach (string autoload in autoloads)
+        {
+            AddAutoloadSingleton(autoload, $"{RootPath}{AutoloadPath}{autoload}.cs");
+        }
     }
 
     public override void _ExitTree()
@@ -60,6 +71,9 @@ public partial class NetfoxSharpPlugin : EditorPlugin
         if ((bool)ProjectSettings.GetSetting(ClearSettings, false))
             foreach (NetfoxSettingData setting in settings)
                 ProjectSettings.SetSetting(setting.SettingName, new());
+
+        foreach (string autoload in autoloads)
+            RemoveAutoloadSingleton(autoload);
     }
 
     class NetfoxNodeData
