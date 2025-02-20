@@ -52,7 +52,7 @@ public partial class StateSynchronizer : Node
         _stateSynchronizer.Set(PropertyNameGd.Root, Root);
         _stateSynchronizer.Set(PropertyNameGd.Properties, Properties);
 
-        AddChild((Node)_stateSynchronizer, @internal: InternalMode.Back);
+        AddChild((Node)_stateSynchronizer, forceReadableName: true, @internal: InternalMode.Back);
     }
 
     #region Methods
