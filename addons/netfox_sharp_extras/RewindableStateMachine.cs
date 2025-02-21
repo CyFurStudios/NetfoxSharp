@@ -2,6 +2,7 @@
 using Netfox.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Gd = Godot.Collections;
 
@@ -35,7 +36,7 @@ public partial class RewindableStateMachine : Node
 
     RewindableState _stateObject;
     RewindableState _previousStateObject;
-    Dictionary<StringName, RewindableState> _availableStates;
+    Dictionary<StringName, RewindableState> _availableStates = new();
 
     public void Transition(StringName newStateName)
     {
@@ -69,10 +70,9 @@ public partial class RewindableStateMachine : Node
     {
         if (what == NotificationReady)
         {
-            foreach (Node child in FindChildren("*", recursive: false))
+            foreach (RewindableState state in GetChildren().OfType<RewindableState>())
             {
-                if (child is RewindableState state)
-                    _availableStates.Add(state.Name, state);
+                _availableStates.Add(state.Name, state);
             }
 
             NetfoxSharp.NetworkTime.AfterTickLoop += AfterTickLoop;
