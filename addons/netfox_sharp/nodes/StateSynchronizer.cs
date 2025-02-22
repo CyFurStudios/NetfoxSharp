@@ -72,7 +72,7 @@ public partial class StateSynchronizer : Node
         public static readonly StringName
             Name = "name",
             Root = "root",
-            Properties = "state_properties";
+            Properties = "properties";
     }
     #endregion
 }
