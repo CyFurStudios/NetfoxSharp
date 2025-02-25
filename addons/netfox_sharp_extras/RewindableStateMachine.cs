@@ -75,7 +75,7 @@ public partial class RewindableStateMachine : Node
                 _availableStates.Add(state.Name, state);
             }
 
-            NetfoxSharp.NetworkTime.AfterTickLoop += AfterTickLoop;
+            NetfoxSharp.NetworkTime.Connect(NetworkTime.SignalName.AfterTickLoop, Callable.From(AfterTickLoop));
         }
     }
 
