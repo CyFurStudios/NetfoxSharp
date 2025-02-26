@@ -1,4 +1,5 @@
 ﻿using Godot;
+using System;
 
 namespace Netfox;
 
@@ -42,18 +43,34 @@ public partial class NetworkTime : Node
     /// between local and server time is above a certain threshold, this value will
     /// be adjusted.</para></summary>
     public long Tick { get { return (long)_networkTimeGd.Get(PropertyNameGd.Tick); } }
+    /// <summary><para>Threshold before recalibrating <see cref="Tick"/> and <see cref="Time"/>.</para>
+    /// <para>Time is continuously synced to the server. In case the time difference is 
+    /// excessive between local and the server, both <see cref="Tick"/> and
+    /// <see cref="Time"/> will be reset to the estimated server values.</para>
+    /// <para>This property determines the difference threshold in seconds for
+    /// recalibration.</para>
+    /// <para><b>NOTE:</b> Deprecated: Use <see cref="NetworkTimeSynchronizer.PanicThreshold"/> instead.</para></summary>
+    [Obsolete]
+    public float RecalibrateThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.RecalibrateThreshold); } }
+    /// <summary><para>Seconds required to pass before considering the game stalled.</para>
+    /// <para>If the game becomes unresponsive for some time - e.g. it becomes minimized,
+    /// unfocused, or freezes -, the game time needs to be readjusted. These stalls
+    /// are detected by checking how much time passes between frames. If it's more
+    /// than this threshold, it's considered a stall, and will be compensated
+    /// against.</para></summary>
+    public float StallThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.StallThreshold); } }
     /// <summary><para>Estimated roundtrip time (ping) to server.</para>
     /// <para>This value is updated regularly, during server time sync. Latency can be 
     /// estimated as half of the roundtrip time. Returns the same as 
     /// <see cref="NetworkTimeSynchronizer.Rtt"/>.</para>
     /// <para><b>NOTE:</b> Will always be 0 on the server.</para></summary>
-    public double RemoteRtt { get { return (long)_networkTimeGd.Get(PropertyNameGd.RemoteRtt); } }
+    public double RemoteRtt { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteRtt); } }
     /// <summary><para>Amount of time a single tick takes, in seconds.</para>
     /// <para>This is the inverse of tickrate.</para></summary>
-    public double TickTime { get { return (long)_networkTimeGd.Get(PropertyNameGd.TickTime); } }
+    public double TickTime { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickTime); } }
     /// <summary><para>Progress towards the next tick from 0 - 1, where 0 is the start
     /// of the current tick and 1 is the start of the next tick.</para></summary>
-    public double TickFactor { get { return (long)_networkTimeGd.Get(PropertyNameGd.TickFactor); } }
+    public double TickFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickFactor); } }
     /// <summary><para>Multiplier to get from physics process speeds to tick speeds.</para>
     /// <para>Some methods, like CharacterBody's move_and_slide take velocity in units/sec
     /// and figure out the time delta on their own. However, they are not aware of 
@@ -66,13 +83,16 @@ public partial class NetworkTime : Node
     /// persistent variable ( e.g. CharacterBody's velocity ).</para>
     /// <para><b>NOTE:</b> This works correctly both in regular and in physics frames, but may
     /// yield different values.</para></summary>
-    public double PhysicsFactor { get { return (long)_networkTimeGd.Get(PropertyNameGd.PhysicsFactor); } }
+    public double PhysicsFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.PhysicsFactor); } }
     /// <summary><para>The maximum clock stretch factor allowed.</para>
     /// <para>For more context on clock stretch, see [member clock_stretch_factor]. The 
     /// minimum allowed clock stretch factor is derived as 1.0 / clock_stretch_max. 
     /// Setting this to larger values will allow for quicker clock adjustment at the 
     /// cost of bigger deviations in game speed.</para></summary>
-    public double ClockStretchMax { get { return (long)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
+    public double ClockStretchMax { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
+    /// <summary><para>Suppress warning when calling <see cref="Start"/> with an <see cref="OfflineMultiplayerPeer"/>
+    /// active.</para></summary>
+    public bool SuppressOfflinePeerWarning { get { return (bool)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
     /// <summary><para>The currently used clock stretch factor.</para>
     /// <para>As the game progresses, the simulation clock may be ahead of, or behind the
     /// host's remote clock. To compensate, whenever the simulation clock is ahead of
@@ -83,20 +103,20 @@ public partial class NetworkTime : Node
     /// indicate speeding up, under 1.0 indicate slowing down.</para>
     /// <para>See <see cref="ClockStretchMax"/> for more clock stretch bounds.</para>
     /// <para>See <see cref="ClockStretchFactor"/> for more on the simulation clock.</para></summary>
-    public double ClockStretchFactor { get { return (long)_networkTimeGd.Get(PropertyNameGd.ClockStretchFactor); } }
+    public double ClockStretchFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchFactor); } }
     /// <summary><para>The current estimated offset between the reference clock and the simulation
     /// clock.</para>
     /// <para>Positive values mean the simulation clock is behind, and needs to run
     /// slightly faster to catch up. Negative values mean the simulation clock is
     /// ahead, and needs to slow down slightly.</para>
     /// <para>See <see cref="ClockStretchFactor"/> for more clock speed adjustment.</para></summary>
-    public double ClockOffset { get { return (long)_networkTimeGd.Get(PropertyNameGd.ClockOffset); } }
+    public double ClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockOffset); } }
     /// <summary>The current estimated offset between the reference clock and the remote
     /// clock.
     /// <para>Positive values mean the reference clock is behind the remote clock,
     /// Negative values mean the reference clock is ahead of the remote clock.</para>
     /// <para>Returns the same as <see cref="NetworkTimeSynchronizer.RemoteOffset"/>.</para></summary>
-    public double RemoteClockOffset { get { return (long)_networkTimeGd.Get(PropertyNameGd.RemoteClockOffset); } }
+    public double RemoteClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteClockOffset); } }
     #endregion
 
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
@@ -217,6 +237,7 @@ public partial class NetworkTime : Node
             Time = "time",
             Tick = "tick",
             RecalibrateThreshold = "recalibrate_threshold",
+            StallThreshold = "stall_threshold",
             RemoteTick = "remote_tick",
             RemoteTime = "remote_time",
             RemoteRtt = "remote_rtt",
@@ -226,6 +247,7 @@ public partial class NetworkTime : Node
             TickFactor = "tick_Factor",
             PhysicsFactor = "physics_factor",
             ClockStretchMax = "clock_stretch_max",
+            SuppressOfflinePeerWarning = "suppress_offline_peer_warning",
             ClockStretchFactor = "clock_stretch_factor",
             ClockOffset = "clock_offset",
             RemoteClockOffset = "remote_clock_offset";

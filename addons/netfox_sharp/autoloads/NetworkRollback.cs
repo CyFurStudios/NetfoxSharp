@@ -12,7 +12,6 @@ namespace Netfox;
 public partial class NetworkRollback : Node
 {
     #region Public Variables
-
     /// <summary>Whether rollbacks are enabled.</summary>
     public bool Enabled
     {
@@ -29,12 +28,27 @@ public partial class NetworkRollback : Node
     /// <summary><para>How many ticks to store as history.</para>
     /// <para>Rollback won't go further than this limit, regardless of inputs received.</para></summary>
     public long HistoryLimit { get { return (long)_networkRollbackGd.Get(PropertyNameGd.HistoryLimit); } }
+    /// <summary><para>The earliest tick that history is retained for.</para>
+    /// <para>Determined by <see cref="HistoryLimit"/>.</para></summary>
+    public long HistoryStart { get { return (long)_networkRollbackGd.Get(PropertyNameGd.HistoryStart); } }
     /// <summary><para>Offset into the past for display.</para>
     /// <para>After the rollback, we have the option to not display the absolute latest
     /// state of the game, but let's say the state two frames ago ( offset = 2 ).
     /// This can help with hiding latency, by giving more time for an up-to-date
     /// state to arrive before we try to display it.</para></summary>
     public long DisplayOffset { get { return (long)_networkRollbackGd.Get(PropertyNameGd.DisplayOffset); } }
+    /// <summary><para>The currently displayed tick.</para>
+    /// <para>This is the current tick as returned by <see cref="NetworkTime.tick"/>, minus
+    /// the <see cref="DisplayOffset"/>. By configuring the <see cref="DisplayOffset"/>, a
+    /// past tick may be displayed to the player, so that updates from the server
+    /// have slightly more time to arrive, masking latency.</para></summary>
+    public long DisplayTick { get { return (long)_networkRollbackGd.Get(PropertyNameGd.DisplayTick); } }
+    /// <summary><para>Offset into the future to submit inputs, in ticks.</para>
+    /// <para>By submitting inputs into the future, they don't happen instantly, but with
+    /// some delay. This can help hiding latency - even if input takes some time to
+    /// arrive, it will still be up to date, as it was timestamped into the future.
+    /// This only works if the input delay is greater than the network latency.</para></summary>
+    public long InputDelay { get { return (long)_networkRollbackGd.Get(PropertyNameGd.InputDelay); } }
     /// <summary><para>How many previous input frames to send along with the current one.</para>
     /// <para>With UDP - packets may be lost, arrive late or out of order.
     /// To mitigate this, we send the current and previous n ticks of input data.</para></summary>
@@ -54,6 +68,7 @@ public partial class NetworkRollback : Node
 
         _networkRollbackGd.Connect(SignalNameGd.BeforeLoop, Callable.From(() => EmitSignal(SignalName.BeforeLoop)));
         _networkRollbackGd.Connect(SignalNameGd.OnPrepareTick, Callable.From((long tick) => EmitSignal(SignalName.OnPrepareTick, tick)));
+        _networkRollbackGd.Connect(SignalNameGd.AfterPrepareTick, Callable.From((long tick) => EmitSignal(SignalName.AfterPrepareTick, tick)));
         _networkRollbackGd.Connect(SignalNameGd.OnProcessTick, Callable.From((long tick) => EmitSignal(SignalName.OnProcessTick, tick)));
         _networkRollbackGd.Connect(SignalNameGd.OnRecordTick, Callable.From((long tick) => EmitSignal(SignalName.OnRecordTick, tick)));
         _networkRollbackGd.Connect(SignalNameGd.AfterLoop, Callable.From(() => EmitSignal(SignalName.AfterLoop)));
@@ -68,6 +83,12 @@ public partial class NetworkRollback : Node
     /// <param name="tick">The tick to be prepared.</param>
     [Signal]
     public delegate void OnPrepareTickEventHandler(long tick);
+    /// <summary><para>Event emitted after preparing each rollback tick.</para>
+    /// <para>Handlers may process the prepared tick, e.g. modulating the input by its age
+    /// to implement input prediction.</para></summary>
+    /// <param name="tick">The tick to be prepared.</param>
+    [Signal]
+    public delegate void AfterPrepareTickEventHandler(long tick);
     /// <summary><para>Event emitted to process the given rollback tick.</para>
     /// <para>Handlers should check if they <b>need</b> to resimulate the given tick, and if so,
     /// generate the next state based on the current data (applied in the prepare
@@ -126,6 +147,26 @@ public partial class NetworkRollback : Node
     /// <param name="tick">The simulated tick.</param>
     /// <param name="isFresh">Whether this is the first time this tick is being processed.</param>
     public void ProcessRollback(GodotObject target, double delta, long tick, bool isFresh) { _networkRollbackGd.Call(MethodNameGd.ProcessRollback, target, delta, tick, isFresh); }
+    /// <summary><para>Marks the target object as mutated.</para>
+    /// <para>Mutated objects will be re-recorded for the specified tick, and resimulated
+    /// from the given tick onwards.</para>
+    /// <para>For special cases, you can specify the tick when the mutation happened. Since
+    /// it defaults to the current rollback <see cref="Tick"/>, this parameter rarely
+    /// needs to be specified.</para>
+    /// <para><b>NOTE:</b> Registering a mutation into the past will yield a warning.</para></summary>
+    /// <param name="target">The target mutatable object.</param>
+    /// <param name="tick">The tick to mutate from. Typically <see cref="Tick"/>.</param>
+    public void Mutate(GodotObject target, long tick) { _networkRollbackGd.Call(MethodNameGd.Mutate, target, tick); }
+    /// <summary><para>Check whether the target object was mutated in or after the given tick via
+    /// <see cref="Mutate(GodotObject, long)"/>.</para></summary>
+    /// <param name="target">The target object to check.</param>
+    /// <param name="tick">The tick to check mutations from.</param>
+    public void IsMutated(GodotObject target, long tick) { _networkRollbackGd.Call(MethodNameGd.IsMutated, target, tick); }
+    /// <summary>Check whether the target object was mutated specifically in the given tick
+    /// via <see cref="Mutate(GodotObject, long)"/>.</summary>
+    /// <param name="target">The target object to check.</param>
+    /// <param name="tick">The tick to check mutations from.</param>
+    public void IsJustMutated(GodotObject target, long tick) { _networkRollbackGd.Call(MethodNameGd.IsJustMutated, target, tick); }
     #endregion
 
     #region StringName Constants
@@ -137,7 +178,10 @@ public partial class NetworkRollback : Node
             IsSimulated = "is_simulated",
             IsRollback = "is_rollback",
             IsRollbackAware = "is_rollback_aware",
-            ProcessRollback = "process_rollback";
+            ProcessRollback = "process_rollback",
+            Mutate = "mutate",
+            IsMutated = "is_mutated",
+            IsJustMutated = "is_just_mutated";
     }
     static class PropertyNameGd
     {
@@ -145,7 +189,10 @@ public partial class NetworkRollback : Node
             Enabled = "enabled",
             EnableDiffStates = "enable_diff_states",
             HistoryLimit = "history_limit",
+            HistoryStart = "history_start",
             DisplayOffset = "display_offset",
+            DisplayTick = "display_tick",
+            InputDelay = "input_delay",
             InputRedundancy = "input_redundancy",
             Tick = "tick";
     }
@@ -154,6 +201,7 @@ public partial class NetworkRollback : Node
         public static readonly StringName
             BeforeLoop = "before_loop",
             OnPrepareTick = "on_prepare_tick",
+            AfterPrepareTick = "after_prepare_tick",
             OnProcessTick = "on_process_tick",
             OnRecordTick = "on_record_tick",
             AfterLoop = "after_loop";
