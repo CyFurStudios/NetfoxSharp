@@ -15,7 +15,7 @@ public partial class TickInterpolator : Node
         set
         {
             _root = value;
-            _tickInterpolator.Set(PropertyNameGd.Root, value);
+            _tickInterpolator?.Set(PropertyNameGd.Root, value);
         }
     }
     Node _root;
@@ -28,7 +28,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator.Set(PropertyNameGd.Enabled, value);
+            _tickInterpolator?.Set(PropertyNameGd.Enabled, value);
         }
     }
     bool _enabled;
@@ -41,7 +41,7 @@ public partial class TickInterpolator : Node
         set
         {
             _properties = value;
-            _tickInterpolator.Set(PropertyNameGd.Properties, value);
+            _tickInterpolator?.Set(PropertyNameGd.Properties, value);
         }
     }
     Array<string> _properties;
@@ -53,7 +53,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator.Set(PropertyNameGd.RecordFirstState, value);
+            _tickInterpolator?.Set(PropertyNameGd.RecordFirstState, value);
         }
     }
     bool _recordFirstState;
@@ -65,7 +65,7 @@ public partial class TickInterpolator : Node
         set
         {
             _enabled = value;
-            _tickInterpolator.Set(PropertyNameGd.EnableRecording, value);
+            _tickInterpolator?.Set(PropertyNameGd.EnableRecording, value);
         }
     }
     bool _enableRecording;

@@ -15,7 +15,7 @@ public partial class StateSynchronizer : Node
         set
         {
             _root = value;
-            _stateSynchronizer.Set(PropertyNameGd.Root, _root);
+            _stateSynchronizer?.Set(PropertyNameGd.Root, _root);
         }
     }
     Node _root;
@@ -27,7 +27,7 @@ public partial class StateSynchronizer : Node
         set
         {
             _properties = value;
-            _stateSynchronizer.Set(PropertyNameGd.Properties, _properties);
+            _stateSynchronizer?.Set(PropertyNameGd.Properties, _properties);
         }
     }
     Array<string> _properties;
