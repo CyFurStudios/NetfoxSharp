@@ -1,9 +1,12 @@
 ﻿using Godot;
 using Godot.Collections;
+using Netfox.Logging;
 
 namespace Netfox;
 
+
 /// <summary>Responsible for synchronizing data between players, with support for rollback.</summary>
+[Tool]
 public partial class RollbackSynchronizer : Node
 {
     #region Exports
@@ -115,20 +118,40 @@ public partial class RollbackSynchronizer : Node
 
     /// <summary>The GDScript script used to instance RollbackSynchronizer.</summary>
     static readonly GDScript _script;
-
+    /// <summary>The name for the internal GDScript netfox node.</summary>
+    static readonly StringName _proxyName = "InternalRollbackSynchronizer";
     /// <summary>Internal reference of the RollbackSynchronizer GDScript node.</summary>
-    GodotObject _rollbackSync;
+    Node _rollbackSync;
+
+    static readonly NetfoxLogger _logger = new("NetfoxSharp", "RollbackSynchronzier");
 
     static RollbackSynchronizer()
     {
         _script = GD.Load<GDScript>("res://addons/netfox/rollback/rollback-synchronizer.gd");
     }
 
-    public RollbackSynchronizer()
+    public override void _Notification(int what)
     {
-        _rollbackSync = (GodotObject)_script.New();
+        if (what == NotificationReady ||
+            what == NotificationEditorPreSave)
+            Initialize();
+    }
 
-        _rollbackSync.Set(PropertyNameGd.Name, "InternalRollbackSynchronizer");
+    private void Initialize()
+    {
+        if (Root == null)
+        {
+            _logger.LogWarning($"Root is not set! Setting as owner ({Owner.Name})");
+            Root = Owner;
+        }
+
+        _rollbackSync = FindChild(_proxyName, owned: false);
+        if (_rollbackSync != null)
+            return;
+
+        _rollbackSync = (Node)_script.New();
+
+        _rollbackSync.Set(PropertyNameGd.Name, _proxyName);
         _rollbackSync.Set(PropertyNameGd.Root, Root);
         _rollbackSync.Set(PropertyNameGd.StateProperties, StateProperties);
         _rollbackSync.Set(PropertyNameGd.FullStateInterval, FullStateInterval);
@@ -136,7 +159,16 @@ public partial class RollbackSynchronizer : Node
         _rollbackSync.Set(PropertyNameGd.InputProperties, InputProperties);
         _rollbackSync.Set(PropertyNameGd.EnableInputBroadcast, EnableInputBroadcast);
 
-        AddChild((Node)_rollbackSync, forceReadableName: true, @internal: InternalMode.Back);
+        CallDeferred(MethodName.AddProxyNode);
+    }
+
+    private void AddProxyNode()
+    {
+        if (FindChild(_proxyName) != null)
+            return;
+
+        AddChild(_rollbackSync, forceReadableName: true, @internal: InternalMode.Back);
+        _rollbackSync.Owner = Owner;
     }
 
     #region Methods
@@ -154,14 +186,26 @@ public partial class RollbackSynchronizer : Node
     /// NetfoxSharp version doesn't currently support tooling/automatic updating.</para></summary>
     /// <param name="node">A string, a <see cref="NodePath"/> pointing to a node, or a <see cref="Node"/> instance.</param>
     /// <param name="property">the property to be added.</param>
-    public void AddState(Variant node, string property) { _rollbackSync.Call(MethodNameGd.AddState, node, property); }
+    public void AddState(Variant node, string property)
+    {
+        _rollbackSync.Call(MethodNameGd.AddState, node, property);
+#if TOOLS
+        StateProperties = (Array<string>)_rollbackSync.Get(PropertyNameGd.StateProperties);
+#endif
+    }
     /// <summary><para>Add an input property.</para>
     /// <para>If the given property is already tracked, this method does nothing.</para>
     /// <para><b>NOTE:</b> Functionality differs between netfox in that the
     /// NetfoxSharp version doesn't currently support tooling/automatic updating.</para></summary>
     /// <param name="node">A string, a <see cref="NodePath"/> pointing to a node, or a <see cref="Node"/> instance.</param>
     /// <param name="property">the property to be added.</param>
-    public void AddInput(Variant node, string property) { _rollbackSync.Call(MethodNameGd.AddInput, node, property); }
+    public void AddInput(Variant node, string property)
+    {
+        _rollbackSync.Call(MethodNameGd.AddInput, node, property);
+#if TOOLS
+        InputProperties = (Array<string>)_rollbackSync.Get(PropertyNameGd.InputProperties);
+#endif
+    }
     /// <summary><para>Check if input is available for the current tick.</para>
     /// <para>This input is not always current, it may be from multiple ticks ago.</para>
     /// <returns>True if input is available.</returns>

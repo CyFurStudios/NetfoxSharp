@@ -1,9 +1,11 @@
 ﻿using Godot;
 using Godot.Collections;
+using Netfox.Logging;
 
 namespace Netfox;
 
 /// <summary>Responsible for interpolating fields between network ticks, resulting in smoother motion.</summary>
+[Tool]
 public partial class TickInterpolator : Node
 {
     #region Exports
@@ -73,32 +75,69 @@ public partial class TickInterpolator : Node
 
     /// <summary>The GDScript script used to instance TickInterpolator.</summary>
     static readonly GDScript _script;
-
+    /// <summary>The name for the internal GDScript netfox node.</summary>
+    static readonly StringName _proxyName = "InternalTickInterpolator";
     /// <summary>Internal reference of the TickInterpolator GDScript node.</summary>
-    GodotObject _tickInterpolator;
+    Node _tickInterpolator;
+
+    static readonly NetfoxLogger _logger = new("NetfoxSharp", "TickInterpolator");
 
     static TickInterpolator()
     {
         _script = GD.Load<GDScript>("res://addons/netfox/tick-interpolator.gd");
     }
 
-    public TickInterpolator()
+    public override void _Notification(int what)
     {
-        _tickInterpolator = (GodotObject)_script.New();
+        if (what == NotificationReady ||
+            what == NotificationEditorPreSave)
+            Initialize();
+    }
 
-        _tickInterpolator.Set(PropertyNameGd.Name, "InternalTickInterpolator");
+    private void Initialize()
+    {
+        if (Root == null)
+        {
+            _logger.LogWarning($"Root is not set! Setting as owner ({Owner?.Name})");
+            Root = Owner;
+        }
+
+        _tickInterpolator = FindChild(_proxyName, owned: false);
+        if (_tickInterpolator != null)
+            return;
+
+        _tickInterpolator = (Node)_script.New();
+
+        _tickInterpolator.Set(PropertyNameGd.Name, _proxyName);
         _tickInterpolator.Set(PropertyNameGd.Root, Root);
         _tickInterpolator.Set(PropertyNameGd.Enabled, Enabled);
         _tickInterpolator.Set(PropertyNameGd.Properties, Properties);
         _tickInterpolator.Set(PropertyNameGd.RecordFirstState, RecordFirstState);
         _tickInterpolator.Set(PropertyNameGd.EnableRecording, EnableRecording);
 
-        AddChild((Node)_tickInterpolator, forceReadableName: true, @internal: InternalMode.Back);
+        CallDeferred(MethodName.AddProxyNode);
     }
+
+    private void AddProxyNode()
+    {
+        if (FindChild(_proxyName) != null)
+            return;
+
+        AddChild(_tickInterpolator, forceReadableName: true, @internal: InternalMode.Back);
+        _tickInterpolator.Owner = Owner;
+    }
+
 
     #region Methods
     /// <summary>Call this after any change to configuration.</summary>
     public void ProcessSettings() { _tickInterpolator.Call(MethodNameGd.ProcessSettings); }
+    public void AddProperty(Variant node, string property)
+    {
+        _tickInterpolator.Call(MethodNameGd.AddProperty, node, property);
+#if TOOLS
+        Properties = (Array<string>)_tickInterpolator.Get(PropertyNameGd.Properties);
+#endif
+    }
     /// <summary><para>Check if interpolation can be done.</para>
     /// <para>Even if it's enabled, no interpolation will be done if there are no
     /// properties to interpolate.</para></summary>
@@ -118,6 +157,7 @@ public partial class TickInterpolator : Node
     {
         public static readonly StringName
             ProcessSettings = "process_settings",
+            AddProperty = "add_property",
             CanInterpolate = "can_interpolate",
             PushState = "push_state",
             Teleport = "teleport";
