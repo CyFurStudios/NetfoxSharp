@@ -179,7 +179,6 @@ public partial class RollbackSynchronizer : Node
     /// this node changes. Make sure to do this at the
     /// same time on all peers.</summary>
     public void ProcessAuthority() { _rollbackSync.Call(MethodNameGd.ProcessAuthority); }
-    // TODO: Add tooling for AddState and AddInput
     /// <summary><para>Add a state property.</para>
     /// <para>If the given property is already tracked, this method does nothing.</para>
     /// <para><b>NOTE:</b> Functionality differs between netfox in that the
