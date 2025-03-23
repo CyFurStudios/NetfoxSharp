@@ -1,30 +1,30 @@
 ﻿using Godot;
 using Netfox.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Gd = Godot.Collections;
-
 namespace Netfox.Extras;
 
+[Tool]
 [GlobalClass]
 public partial class RewindableStateMachine : Node
 {
     /// <summary><para>Name of the current state.</para>
     /// <para>Can be an empty string if no state is active. Only modify directly if you
     /// need to skip <see cref="Transition"/>'s callbacks.</para></summary>
-    [Export]
     StringName State
     {
         get
         {
-            if (_stateObject != null)
-                return _stateObject.Name;
+            if (_currentState != null)
+                return _currentState.Name;
             return "";
         }
         set => SetState(value);
     }
+
+    [Export]
+    RewindableState _currentState;
 
     [Signal]
     public delegate void OnStateChangedEventHandler(RewindableState oldState, RewindableState newState);
@@ -34,7 +34,6 @@ public partial class RewindableStateMachine : Node
 
     static NetfoxLogger _logger = NetfoxLogger.ForExtras("RewindableStateMachine");
 
-    RewindableState _stateObject;
     RewindableState _previousStateObject;
     Dictionary<StringName, RewindableState> _availableStates = new();
 
@@ -52,27 +51,31 @@ public partial class RewindableStateMachine : Node
 
         RewindableState newState = _availableStates[newStateName];
 
-        if (_stateObject != null)
+        if (_currentState != null)
         {
-            if (!newState.CanEnter(_stateObject))
+            if (!newState.CanEnter(_currentState))
                 return;
 
-            _stateObject.Exit(newState, NetfoxSharp.NetworkRollback.Tick);
+            _currentState.Exit(newState, NetworkRollback.Tick);
         }
 
-        RewindableState oldState = _stateObject;
-        _stateObject = newState;
+        RewindableState oldState = _currentState;
+        _currentState = newState;
         EmitSignal(SignalName.OnStateChanged, oldState, newState);
-        _stateObject.Enter(oldState, NetfoxSharp.NetworkRollback.Tick);
+        _currentState.Enter(oldState, NetworkRollback.Tick);
     }
 
     public override void _Notification(int what)
     {
+        if (Engine.IsEditorHint())
+            return;
+
         if (what == NotificationReady)
         {
             foreach (RewindableState state in GetChildren().OfType<RewindableState>())
             {
-                _availableStates.Add(state.Name, state);
+                if (!_availableStates.ContainsKey(state.Name))
+                    _availableStates.Add(state.Name, state);
             }
 
             NetfoxSharp.NetworkTime.Connect(NetworkTime.SignalName.AfterTickLoop, Callable.From(AfterTickLoop));
@@ -81,49 +84,44 @@ public partial class RewindableStateMachine : Node
 
     public override string[] _GetConfigurationWarnings()
     {
-        Gd.Array<Node> nodes = GetParent().GetChildren();
-        RollbackSynchronizer rollbackSync = null;
+        IEnumerable<RollbackSynchronizer> nodes = Owner.FindChildren("*").OfType<RollbackSynchronizer>();
+        int rollbackNodes = 0;
 
         foreach (Node node in nodes)
-        {
-            if (node is RollbackSynchronizer sync)
-            {
-                rollbackSync = sync;
-                break;
-            }
-        }
+            if (node.Owner == Owner)
+                rollbackNodes++;
 
-        if (rollbackSync == null)
-            return new string[] { "RewindableStateMachine is not managed by a" +
-                "RollbackSynchronizer! Add it as a sibling node to fix this." };
+        List<string> warnings = new();
 
-        if (rollbackSync.Root == null)
-            return new string[] { "RollbackSynchronizer configuration is invalid, " +
+        if (rollbackNodes == 0)
+            return ["This node is not managed by a RollbackSynchronizer!"];
+        if (rollbackNodes > 1)
+            warnings.Add("Multiple RollbackSynchronizers detected!");
+        if (nodes.First().Root == null)
+            warnings.Add("RollbackSynchronizer configuration is invalid, " +
                 "it can't manage this state machine!\nNote: You may need to reload " +
-                "this scene after fixing for this warning to disappear."};
+                "this scene after fixing for this warning to disappear.");
 
-        // TODO: Add error parsing for PropertyEntry
-
-        return Array.Empty<string>();
+        return warnings.ToArray();
     }
 
     public void _rollback_tick(double delta, long tick, bool isFresh)
     {
-        if (_stateObject != null)
-            _stateObject.Tick(delta, tick, isFresh);
+        if (_currentState != null)
+            _currentState.Tick(delta, tick, isFresh);
     }
 
     private void AfterTickLoop()
     {
-        if (_stateObject != _previousStateObject)
+        if (_currentState != _previousStateObject)
         {
-            EmitSignal(SignalName.OnDisplayStateChanged, _previousStateObject, _stateObject);
+            EmitSignal(SignalName.OnDisplayStateChanged, _previousStateObject, _currentState);
 
             if (_previousStateObject != null)
-                _previousStateObject.DisplayExit(_stateObject, NetfoxSharp.NetworkTime.Tick);
+                _previousStateObject.DisplayExit(_currentState, NetworkTime.Tick);
 
-            _stateObject.DisplayEnter(_previousStateObject, NetfoxSharp.NetworkTime.Tick);
-            _previousStateObject = _stateObject;
+            _currentState.DisplayEnter(_previousStateObject, NetworkTime.Tick);
+            _previousStateObject = _currentState;
         }
     }
 
@@ -138,6 +136,6 @@ public partial class RewindableStateMachine : Node
             return;
         }
 
-        _stateObject = _availableStates[newState];
+        _currentState = _availableStates[newState];
     }
 }

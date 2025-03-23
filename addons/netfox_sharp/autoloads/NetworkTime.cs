@@ -15,18 +15,18 @@ public partial class NetworkTime : Node
 {
     #region Public Variables
     /// <summary>Number of ticks per second.</summary>
-    public long TickRate { get { return (long)_networkTimeGd.Get(PropertyNameGd.TickRate); } }
+    public static long TickRate { get { return (long)_networkTimeGd.Get(PropertyNameGd.TickRate); } }
     /// <summary><para>Whether to sync the network ticks to physics updates.</para>
     /// <para>When set to true, tickrate will be the same as the physics ticks per second, 
     /// and the network tick loop will be run inside the physics update process.</para></summary>
-    public bool SyncToPhysics { get { return (bool)_networkTimeGd.Get(PropertyNameGd.SyncToPhysics); } }
+    public static bool SyncToPhysics { get { return (bool)_networkTimeGd.Get(PropertyNameGd.SyncToPhysics); } }
     /// <summary><para>Maximum number of ticks to simulate per frame.</para>
     /// <para>If the game itself runs slower than the configured tickrate, multiple ticks
     /// will be run in a single go. However, to avoid an endless feedback loop of
     /// running too many ticks in a frame, which makes the game even slower, which
     /// results in even more ticks and so on, this setting is an upper limit on how
     /// many ticks can be simulated in a single go.</para></summary>summary>
-    public long MaxTicksPerFrame { get { return (long)_networkTimeGd.Get(PropertyNameGd.MaxTicksPerFrame); } }
+    public static long MaxTicksPerFrame { get { return (long)_networkTimeGd.Get(PropertyNameGd.MaxTicksPerFrame); } }
     /// <summary><para>Current network time in seconds.</para>
     /// <para>Time is measured from the start of NetworkTime, in practice this is often the
     /// time from the server's start.</para>
@@ -34,7 +34,7 @@ public partial class NetworkTime : Node
     /// <para><b>NOTE:</b> Time is continuously synced with the server. If the difference 
     /// between local and server time is above a certain threshold, this value will
     /// be adjusted.</para></summary>
-    public double Time { get { return (double)_networkTimeGd.Get(PropertyNameGd.Time); } }
+    public static double Time { get { return (double)_networkTimeGd.Get(PropertyNameGd.Time); } }
     /// <summary><para>Current network time in ticks.</para>
     /// <para>Ticks are measured from the start of NetworkTime, in practice this is often the
     /// time from the server's start.</para>
@@ -42,7 +42,7 @@ public partial class NetworkTime : Node
     /// <para><b>NOTE:</b> Time is continuously synced with the server. If the difference 
     /// between local and server time is above a certain threshold, this value will
     /// be adjusted.</para></summary>
-    public long Tick { get { return (long)_networkTimeGd.Get(PropertyNameGd.Tick); } }
+    public static long Tick { get { return (long)_networkTimeGd.Get(PropertyNameGd.Tick); } }
     /// <summary><para>Threshold before recalibrating <see cref="Tick"/> and <see cref="Time"/>.</para>
     /// <para>Time is continuously synced to the server. In case the time difference is 
     /// excessive between local and the server, both <see cref="Tick"/> and
@@ -51,26 +51,26 @@ public partial class NetworkTime : Node
     /// recalibration.</para>
     /// <para><b>NOTE:</b> Deprecated: Use <see cref="NetworkTimeSynchronizer.PanicThreshold"/> instead.</para></summary>
     [Obsolete]
-    public float RecalibrateThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.RecalibrateThreshold); } }
+    public static float RecalibrateThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.RecalibrateThreshold); } }
     /// <summary><para>Seconds required to pass before considering the game stalled.</para>
     /// <para>If the game becomes unresponsive for some time - e.g. it becomes minimized,
     /// unfocused, or freezes -, the game time needs to be readjusted. These stalls
     /// are detected by checking how much time passes between frames. If it's more
     /// than this threshold, it's considered a stall, and will be compensated
     /// against.</para></summary>
-    public float StallThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.StallThreshold); } }
+    public static float StallThreshold { get { return (float)_networkTimeGd.Get(PropertyNameGd.StallThreshold); } }
     /// <summary><para>Estimated roundtrip time (ping) to server.</para>
     /// <para>This value is updated regularly, during server time sync. Latency can be 
     /// estimated as half of the roundtrip time. Returns the same as 
     /// <see cref="NetworkTimeSynchronizer.Rtt"/>.</para>
     /// <para><b>NOTE:</b> Will always be 0 on the server.</para></summary>
-    public double RemoteRtt { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteRtt); } }
+    public static double RemoteRtt { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteRtt); } }
     /// <summary><para>Amount of time a single tick takes, in seconds.</para>
     /// <para>This is the inverse of tickrate.</para></summary>
-    public double TickTime { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickTime); } }
+    public static double TickTime { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickTime); } }
     /// <summary><para>Progress towards the next tick from 0 - 1, where 0 is the start
     /// of the current tick and 1 is the start of the next tick.</para></summary>
-    public double TickFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickFactor); } }
+    public static double TickFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.TickFactor); } }
     /// <summary><para>Multiplier to get from physics process speeds to tick speeds.</para>
     /// <para>Some methods, like CharacterBody's move_and_slide take velocity in units/sec
     /// and figure out the time delta on their own. However, they are not aware of 
@@ -83,16 +83,16 @@ public partial class NetworkTime : Node
     /// persistent variable ( e.g. CharacterBody's velocity ).</para>
     /// <para><b>NOTE:</b> This works correctly both in regular and in physics frames, but may
     /// yield different values.</para></summary>
-    public double PhysicsFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.PhysicsFactor); } }
+    public static double PhysicsFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.PhysicsFactor); } }
     /// <summary><para>The maximum clock stretch factor allowed.</para>
     /// <para>For more context on clock stretch, see [member clock_stretch_factor]. The 
     /// minimum allowed clock stretch factor is derived as 1.0 / clock_stretch_max. 
     /// Setting this to larger values will allow for quicker clock adjustment at the 
     /// cost of bigger deviations in game speed.</para></summary>
-    public double ClockStretchMax { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
+    public static double ClockStretchMax { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
     /// <summary><para>Suppress warning when calling <see cref="Start"/> with an <see cref="OfflineMultiplayerPeer"/>
     /// active.</para></summary>
-    public bool SuppressOfflinePeerWarning { get { return (bool)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
+    public static bool SuppressOfflinePeerWarning { get { return (bool)_networkTimeGd.Get(PropertyNameGd.ClockStretchMax); } }
     /// <summary><para>The currently used clock stretch factor.</para>
     /// <para>As the game progresses, the simulation clock may be ahead of, or behind the
     /// host's remote clock. To compensate, whenever the simulation clock is ahead of
@@ -103,24 +103,24 @@ public partial class NetworkTime : Node
     /// indicate speeding up, under 1.0 indicate slowing down.</para>
     /// <para>See <see cref="ClockStretchMax"/> for more clock stretch bounds.</para>
     /// <para>See <see cref="ClockStretchFactor"/> for more on the simulation clock.</para></summary>
-    public double ClockStretchFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchFactor); } }
+    public static double ClockStretchFactor { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockStretchFactor); } }
     /// <summary><para>The current estimated offset between the reference clock and the simulation
     /// clock.</para>
     /// <para>Positive values mean the simulation clock is behind, and needs to run
     /// slightly faster to catch up. Negative values mean the simulation clock is
     /// ahead, and needs to slow down slightly.</para>
     /// <para>See <see cref="ClockStretchFactor"/> for more clock speed adjustment.</para></summary>
-    public double ClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockOffset); } }
+    public static double ClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.ClockOffset); } }
     /// <summary>The current estimated offset between the reference clock and the remote
     /// clock.
     /// <para>Positive values mean the reference clock is behind the remote clock,
     /// Negative values mean the reference clock is ahead of the remote clock.</para>
     /// <para>Returns the same as <see cref="NetworkTimeSynchronizer.RemoteOffset"/>.</para></summary>
-    public double RemoteClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteClockOffset); } }
+    public static double RemoteClockOffset { get { return (double)_networkTimeGd.Get(PropertyNameGd.RemoteClockOffset); } }
     #endregion
 
     /// <summary>Internal reference of the NetworkTime GDScript autoload.</summary>
-    GodotObject _networkTimeGd;
+    static GodotObject _networkTimeGd;
 
     /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkRollback GDScript autoload.</param>
@@ -179,39 +179,39 @@ public partial class NetworkTime : Node
     /// <para>On clients, the initial time sync must complete before any ticks are emitted.</para>
     /// <para>To check if this initial sync is done, see <see cref="IsInitialSyncDone"/>. If
     /// you need a signal, see <see cref="AfterSync"/>.</para></summary>
-    public void Start() { _networkTimeGd.Call(MethodNameGd.Start); }
+    public static void Start() { _networkTimeGd.Call(MethodNameGd.Start); }
     /// <summary><para>Stops NetworkTime.</para>
     /// <para>This will stop the time sync in the background, and no more ticks will be 
     /// emitted until the next start.</para></summary>
-    public void Stop() { _networkTimeGd.Call(MethodNameGd.Stop); }
+    public static void Stop() { _networkTimeGd.Call(MethodNameGd.Stop); }
     /// <summary>Check if the initial time sync is done.</summary>
     /// <returns>Whether the initial sync is done.</returns>
-    public bool IsInitialSyncDone() { return (bool)_networkTimeGd.Call(MethodNameGd.IsInitialSyncDone); }
+    public static bool IsInitialSyncDone() { return (bool)_networkTimeGd.Call(MethodNameGd.IsInitialSyncDone); }
     /// <summary><para>Check if client's time sync is complete.</para>
     /// <para><b>NOTE: </b> Using this from a client is considered an error.</para></summary>
     /// <param name="peerId">The id of the client to check.</param>
     /// <returns>Whether the client's time sync is complete.</returns>
-    public bool IsClientSynced(long peerId) { return (bool)_networkTimeGd.Call(MethodNameGd.IsClientSynced, peerId); }
+    public static bool IsClientSynced(long peerId) { return (bool)_networkTimeGd.Call(MethodNameGd.IsClientSynced, peerId); }
     /// <summary>Converts a duration of ticks to seconds.</summary>
     /// <param name="ticks">The number of ticks to convert.</param>
     /// <returns>The number of seconds the specified ticks represent.</returns>
-    public double TicksToSeconds(long ticks) { return (double)_networkTimeGd.Call(MethodNameGd.TicksToSeconds, ticks); }
+    public static double TicksToSeconds(long ticks) { return (double)_networkTimeGd.Call(MethodNameGd.TicksToSeconds, ticks); }
     /// <summary>Converts a duration of seconds to ticks.</summary>
     /// <param name="ticks">The number of seconds to convert.</param>
     /// <returns>The number of ticks the specified seconds represent.</returns>
-    public long SecondsToTicks(double seconds) { return (long)_networkTimeGd.Call(MethodNameGd.SecondsToTicks, seconds); }
+    public static long SecondsToTicks(double seconds) { return (long)_networkTimeGd.Call(MethodNameGd.SecondsToTicks, seconds); }
     /// <summary>Calculate the duration between two ticks in seconds.</summary>
     /// <param name="fromTick">The tick to start counting from.</param>
     /// <param name="toTick">The tick to count to.</param>
     /// <returns>The difference in seconds between the values. Returns a negative number if
     /// toTick is smaller than fromTick.</returns>
-    public double SecondsBetween(long fromTick, long toTick) { return (double)_networkTimeGd.Call(MethodNameGd.SecondsBetween, fromTick, toTick); }
+    public static double SecondsBetween(long fromTick, long toTick) { return (double)_networkTimeGd.Call(MethodNameGd.SecondsBetween, fromTick, toTick); }
     /// <summary>Calculate the duration between two times in ticks.</summary>
     /// <param name="fromSecond">The second to start counting from.</param>
     /// <param name="toSecond">The second to count to.</param>
     /// <returns>The difference in ticks between the values. Returns a negative number if
     /// toSecond is smaller than fromSecond.</returns>
-    public long TicksBetween(double fromSecond, double toSecond) { return (long)_networkTimeGd.Call(MethodNameGd.TicksBetween, fromSecond, toSecond); }
+    public static long TicksBetween(double fromSecond, double toSecond) { return (long)_networkTimeGd.Call(MethodNameGd.TicksBetween, fromSecond, toSecond); }
     #endregion
 
     #region StringName Constants

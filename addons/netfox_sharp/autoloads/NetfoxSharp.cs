@@ -20,7 +20,6 @@ public partial class NetfoxSharp : Node
 
     public override void _EnterTree()
     {
-        // TODO: Test to see if we need to AddChild() to get signals working.
         NetworkTime = new(GetNode("/root/NetworkTime"));
         NetworkTimeSynchronizer = new(GetNode("/root/NetworkTimeSynchronizer"));
         NetworkRollback = new(GetNode("/root/NetworkRollback"));

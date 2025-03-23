@@ -28,7 +28,7 @@ public partial class NetworkEvents : Node
     /// <para>Events are only emitted when it's enabled. Disabling this can free up some
     /// performance, as when enabled, the multiplayer API and the host are
     /// continuously checked for changes.</para></summary>
-    public bool Enabled
+    public static bool Enabled
     {
         get { return (bool)_networkEventsGd.Get(PropertyNameGd.Enabled); }
         set { _networkEventsGd.Set(PropertyNameGd.Enabled, value); }
@@ -36,7 +36,7 @@ public partial class NetworkEvents : Node
     #endregion
 
     /// <summary>Internal reference of the NetworkEvents GDScript autoload.</summary>
-    GodotObject _networkEventsGd;
+    static GodotObject _networkEventsGd;
 
     /// <summary>Internal constructor used by <see cref="NetfoxSharp"/>. Should not be used elsewhere.</summary>
     /// <param name="networkTimeGd">The NetworkEvents GDScript autoload.</param>
@@ -87,7 +87,7 @@ public partial class NetworkEvents : Node
     #region Methods
     /// <summary>Check if we're running as server.</summary>
     /// <returns>Whether this instance is a server</returns>
-    public bool IsServer() { return (bool)_networkEventsGd.Call(MethodNameGd.IsServer); }
+    public static bool IsServer() { return (bool)_networkEventsGd.Call(MethodNameGd.IsServer); }
     #endregion
 
     #region StringName Constants
