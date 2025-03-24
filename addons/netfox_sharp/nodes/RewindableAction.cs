@@ -10,6 +10,7 @@ namespace Netfox;
 /// <para><b>NOTE:</b> This class is <u><i>experimental</i></u>. While
 /// experimental, breaking changes may be introduced at any time.</para>
 /// </summary>
+[Tool]
 public partial class RewindableAction : Node
 {
     /// <summary>The GDScript script used to instance RollbackSynchronizer.</summary>

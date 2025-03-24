@@ -18,14 +18,16 @@ public partial class NetfoxSharpPlugin : EditorPlugin
     {
         "RollbackSynchronizer",
         "StateSynchronizer",
-        "TickInterpolator"
+        "TickInterpolator",
+        "RewindableAction"
     };
 
     private static readonly NetfoxNodeData[] nodes = new NetfoxNodeData[]
     {
         new("RollbackSynchronizer", Node),
         new("StateSynchronizer", Node),
-        new("TickInterpolator", Node)
+        new("TickInterpolator", Node),
+        new("RewindableAction", Node)
     };
 
     private static readonly string[] autoloads = new[]
