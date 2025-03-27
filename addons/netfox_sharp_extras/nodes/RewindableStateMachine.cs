@@ -63,13 +63,6 @@ public partial class RewindableStateMachine : Node
     RewindableState _previousStateObject;
     Dictionary<StringName, RewindableState> _availableStates = new();
 
-
-## Upon transitioning, [method RewindableState.exit] is called on the old state,
-## and [method RewindableState.enter] is called on the new state. In addition,
-## [signal on_state_changed] is emitted.
-## [br][br]
-## Does nothing if transitioning to the currently active state. Emits a warning
-## and does nothing when transitioning to an unknown state.
     /// <summary><para>Transitions to a new state.</para>
     /// <para>Finds the given state by name and transitions to it if possible.
     /// The new state's <see cref="RewindableState.CanEnter(RewindableState)"/>
