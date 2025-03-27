@@ -5,7 +5,10 @@ using Netfox.Logging;
 namespace Netfox;
 
 
-/// <summary>Responsible for synchronizing data between players, with support for rollback.</summary>
+/// <summary><para>C# wrapper for Fox's Sake Studio's
+/// <see href="https://github.com/foxssake/netfox/"> netfox</see> addon.</para>
+/// <para>Responsible for synchronizing data between players, with support for
+/// rollback.</para></summary>
 [Tool]
 public partial class RollbackSynchronizer : Node
 {

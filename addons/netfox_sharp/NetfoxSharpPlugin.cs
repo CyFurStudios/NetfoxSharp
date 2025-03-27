@@ -1,6 +1,11 @@
 #if TOOLS
 using Godot;
 
+/// <summary><para>C# wrapper for Fox's Sake Studio's
+/// <see href="https://github.com/foxssake/netfox/"> netfox</see> addon.</para>
+/// <para>Tool script to load NetfoxSharp addon into Godot.</para>
+/// <para><b>WARNING:</b> Do not access directly!</para>
+/// </summary>
 [Tool]
 public partial class NetfoxSharpPlugin : EditorPlugin
 {

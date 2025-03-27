@@ -3,7 +3,10 @@ using Godot.Collections;
 
 namespace Netfox;
 
-/// <summary>Responsible for synchronizing state from the node's authority to other peers.</summary>
+/// <summary><para>C# wrapper for Fox's Sake Studio's
+/// <see href="https://github.com/foxssake/netfox/"> netfox</see> addon.</para>
+/// <para>Responsible for synchronizing state from the node's authority to
+/// other peers.</para></summary>
 public partial class StateSynchronizer : Node
 {
     #region Exports

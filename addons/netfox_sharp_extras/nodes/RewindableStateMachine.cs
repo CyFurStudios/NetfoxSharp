@@ -5,6 +5,16 @@ using System.Linq;
 
 namespace Netfox.Extras;
 
+/// <summary><para>A state machine that can be used with rollback.</para>
+/// <para>It relies on <see cref="RollbackSynchronizer"/> to manage its state.
+/// State transitions are only triggered by gameplay code, and not by rollback
+/// reverting to an earlier state.</para>
+/// <para>For this node to work correctly, a <see cref="RollbackSynchronizer"/>
+/// must be added as a sibling, and it must have the
+/// <see cref="CurrentState"/>'s property configured as a state property.
+/// </para>
+/// <para>To implement states, extend the <see cref="RewindableState"/> class
+/// and add it as a child node.</para></summary>
 [Tool]
 [GlobalClass]
 public partial class RewindableStateMachine : Node
@@ -16,19 +26,35 @@ public partial class RewindableStateMachine : Node
     {
         get
         {
-            if (_currentState != null)
-                return _currentState.Name;
+            if (CurrentState != null)
+                return CurrentState.Name;
             return "";
         }
         set => SetState(value);
     }
 
+    /// <summary><para>Current state.</para>
+    /// <para>Can be null if no state is active.</para></summary>
     [Export]
-    RewindableState _currentState;
+    RewindableState CurrentState;
 
+    /// <summary><para>Emitted during state transitions.</para>
+    /// <para>This signal can be used to run gameplay code on state changes.
+    /// </para>
+    /// <para>This signal is emitted whenever a transition happens during
+    /// rollback, which means it may be emitted multiple times for the same
+    /// transition if it gets resimulated during rollback.</para></summary>
+    /// <param name="oldState">The state that was just left.</param>
+    /// <param name="newState">The state that was just entered.</param>
     [Signal]
     public delegate void OnStateChangedEventHandler(RewindableState oldState, RewindableState newState);
-
+    /// <summary><para>Emitted after the displayed state has changed.</para>
+    /// <para>This signal can be used to update visuals on state changes.
+    /// </para>
+    /// <para>This signal is emitted whenever the state after a tick loop has
+    /// changed.</para></summary>
+    /// <param name="oldState">The state that was just left.</param>
+    /// <param name="newState">The state that was just entered.</param>
     [Signal]
     public delegate void OnDisplayStateChangedEventHandler(RewindableState oldState, RewindableState newState);
 
@@ -37,6 +63,23 @@ public partial class RewindableStateMachine : Node
     RewindableState _previousStateObject;
     Dictionary<StringName, RewindableState> _availableStates = new();
 
+
+## Upon transitioning, [method RewindableState.exit] is called on the old state,
+## and [method RewindableState.enter] is called on the new state. In addition,
+## [signal on_state_changed] is emitted.
+## [br][br]
+## Does nothing if transitioning to the currently active state. Emits a warning
+## and does nothing when transitioning to an unknown state.
+    /// <summary><para>Transitions to a new state.</para>
+    /// <para>Finds the given state by name and transitions to it if possible.
+    /// The new state's <see cref="RewindableState.CanEnter(RewindableState)"/>
+    /// callback decides if it can be entered from the current state.</para>
+    /// <para>Upon transitioning, [method RewindableState.exit] is called on
+    /// the old state, and
+    /// <see cref="RewindableState.Enter(RewindableState, long)"/> is called on
+    /// the new state. In addition, <see cref="OnStateChanged"/> is emitted.
+    /// </para></summary>
+    /// <param name="newStateName">The name of the new state to enter.</param>
     public void Transition(StringName newStateName)
     {
         if (State.Equals(newStateName))
@@ -51,18 +94,18 @@ public partial class RewindableStateMachine : Node
 
         RewindableState newState = _availableStates[newStateName];
 
-        if (_currentState != null)
+        if (CurrentState != null)
         {
-            if (!newState.CanEnter(_currentState))
+            if (!newState.CanEnter(CurrentState))
                 return;
 
-            _currentState.Exit(newState, NetworkRollback.Tick);
+            CurrentState.Exit(newState, NetworkRollback.Tick);
         }
 
-        RewindableState oldState = _currentState;
-        _currentState = newState;
+        RewindableState oldState = CurrentState;
+        CurrentState = newState;
         EmitSignal(SignalName.OnStateChanged, oldState, newState);
-        _currentState.Enter(oldState, NetworkRollback.Tick);
+        CurrentState.Enter(oldState, NetworkRollback.Tick);
     }
 
     public override void _Notification(int what)
@@ -107,21 +150,21 @@ public partial class RewindableStateMachine : Node
 
     public void _rollback_tick(double delta, long tick, bool isFresh)
     {
-        if (_currentState != null)
-            _currentState.Tick(delta, tick, isFresh);
+        if (CurrentState != null)
+            CurrentState.Tick(delta, tick, isFresh);
     }
 
     private void AfterTickLoop()
     {
-        if (_currentState != _previousStateObject)
+        if (CurrentState != _previousStateObject)
         {
-            EmitSignal(SignalName.OnDisplayStateChanged, _previousStateObject, _currentState);
+            EmitSignal(SignalName.OnDisplayStateChanged, _previousStateObject, CurrentState);
 
             if (_previousStateObject != null)
-                _previousStateObject.DisplayExit(_currentState, NetworkTime.Tick);
+                _previousStateObject.DisplayExit(CurrentState, NetworkTime.Tick);
 
-            _currentState.DisplayEnter(_previousStateObject, NetworkTime.Tick);
-            _previousStateObject = _currentState;
+            CurrentState.DisplayEnter(_previousStateObject, NetworkTime.Tick);
+            _previousStateObject = CurrentState;
         }
     }
 
@@ -136,6 +179,6 @@ public partial class RewindableStateMachine : Node
             return;
         }
 
-        _currentState = _availableStates[newState];
+        CurrentState = _availableStates[newState];
     }
 }
