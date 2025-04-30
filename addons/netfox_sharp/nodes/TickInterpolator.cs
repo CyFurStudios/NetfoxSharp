@@ -57,7 +57,7 @@ public partial class TickInterpolator : Node
         get { return _recordFirstState; }
         set
         {
-            _enabled = value;
+            _recordFirstState = value;
             _tickInterpolator?.Set(PropertyNameGd.RecordFirstState, value);
         }
     }
@@ -69,7 +69,7 @@ public partial class TickInterpolator : Node
         get { return _enableRecording; }
         set
         {
-            _enabled = value;
+            _enableRecording = value;
             _tickInterpolator?.Set(PropertyNameGd.EnableRecording, value);
         }
     }
