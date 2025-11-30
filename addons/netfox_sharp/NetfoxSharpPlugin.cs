@@ -13,6 +13,7 @@ public partial class NetfoxSharpPlugin : EditorPlugin
 		Node = "Node",
 
 		RootPath = "res://addons/netfox_sharp/",
+		RootPathExtras = "res://addons/netfox_sharp_extras/",
 		NodePath = "nodes/",
 		IconPath = "icons/",
 		AutoloadPath = "autoloads/",
@@ -21,11 +22,14 @@ public partial class NetfoxSharpPlugin : EditorPlugin
 
 	private static readonly NetfoxNodeData[] nodes = new NetfoxNodeData[]
 	{
-		new("RollbackSynchronizer", Node),
-		new("StateSynchronizer", Node),
-		new("TickInterpolator", Node),
-		new("RewindableAction", Node),
-		new("PeerVisibilityFilter", Node)
+		new("RollbackSynchronizer", RootPath, Node),
+		new("StateSynchronizer", RootPath, Node),
+		new("TickInterpolator", RootPath, Node),
+		new("RewindableAction", RootPath, Node),
+		new("PeerVisibilityFilter", RootPath, Node),
+
+		new("RewindableStateMachine", RootPathExtras, Node),
+		new("RewindableState", RootPathExtras, Node)
 	};
 
 	private static readonly string[] autoloads = new[]
@@ -43,8 +47,8 @@ public partial class NetfoxSharpPlugin : EditorPlugin
 		foreach (NetfoxNodeData node in nodes)
 		{
 			AddCustomType($"{node.NodeName}Sharp", node.NodeType,
-				GD.Load<Script>($"{RootPath}{NodePath}{node.NodeName}.cs"),
-				GD.Load<Texture2D>($"{RootPath}{IconPath}{node.NodeName}.svg"));
+				GD.Load<Script>($"{node.RootPath}{NodePath}{node.NodeName}.cs"),
+				GD.Load<Texture2D>($"{node.RootPath}{IconPath}{node.NodeName}.svg"));
 		}
 
 		foreach (NetfoxSettingData setting in settings)
@@ -79,11 +83,13 @@ public partial class NetfoxSharpPlugin : EditorPlugin
 	class NetfoxNodeData
 	{
 		public readonly string NodeName;
+		public readonly string RootPath;
 		public readonly string NodeType;
 
-		public NetfoxNodeData(string nodeName, string nodeType)
+		public NetfoxNodeData(string nodeName, string rootPath, string nodeType)
 		{
 			NodeName = nodeName;
+			RootPath = rootPath;
 			NodeType = nodeType;
 		}
 	}

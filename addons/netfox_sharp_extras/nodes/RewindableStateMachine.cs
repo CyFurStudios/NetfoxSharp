@@ -16,7 +16,6 @@ namespace Netfox.Extras;
 /// <para>To implement states, extend the <see cref="RewindableState"/> class
 /// and add it as a child node.</para></summary>
 [Tool]
-[GlobalClass]
 public partial class RewindableStateMachine : Node
 {
 	/// <summary><para>Name of the current state.</para>
